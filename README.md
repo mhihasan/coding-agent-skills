@@ -20,6 +20,7 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 | `system-designing` | Kleppmann & Riccomini — *Designing Data-Intensive Applications* (2nd ed.) |
 | `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
 | `jira-to-markdown` | Pull a Jira ticket to a local markdown file with all images downloaded |
+| `plan-from-ticket` | Turn a local ticket/spec file into a reviewed implementation `PLAN-<KEY>.md` beside it |
 
 ## Installation
 
