@@ -102,12 +102,12 @@ See `references/conventional-commits.md` for valid types and scope guidance.
 **Determine the output path before writing:**
 
 1. Check the conversation for a Jira ticket number (patterns: `ABC-123`, `PROJ-456`, any `[A-Z]+-[0-9]+`). Also check the current branch name — branches are often named `feature/ABC-123-description` or `ABC-123/something`.
-2. If a ticket number is found, name the file `<TICKET>.md` (e.g. `ABC-123.md`).
+2. If a ticket number is found, name the file `commit-plan-<TICKET>.md` (e.g. `commit-plan-ABC-123.md`).
 3. If no ticket number is found, name the file `commit-plan.md`.
 4. Always write to `local-dev/plans/` relative to the repo root. Create the directory if it doesn't exist: `mkdir -p local-dev/plans`.
 
 Final path examples:
-- With ticket: `local-dev/plans/ABC-123.md`
+- With ticket: `local-dev/plans/commit-plan-ABC-123.md`
 - Without ticket: `local-dev/plans/commit-plan.md`
 
 Output a markdown file at that path. Structure:
@@ -187,7 +187,7 @@ echo "Force push when ready: git push --force-with-lease"
 
 After producing the plan file, stop and tell the user the exact path it was saved to, then say:
 
-> "Plan saved to `local-dev/plans/<filename>.md`. Review the proposed commits and the execution script. Edit the file if anything needs changing, then tell me to proceed — or give me feedback and I'll revise the plan."
+> "Plan saved to `local-dev/plans/commit-plan-<TICKET>.md`. Review the proposed commits and the execution script. Edit the file if anything needs changing, then tell me to proceed — or give me feedback and I'll revise the plan."
 
 **Do not run any git reset or commit commands until the user explicitly confirms.**
 

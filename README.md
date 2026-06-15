@@ -19,6 +19,7 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 | `pytest-expert` | Opinionated pytest best practices for Python |
 | `system-designing` | Kleppmann & Riccomini — *Designing Data-Intensive Applications* (2nd ed.) |
 | `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
+| `jira-to-markdown` | Pull a Jira ticket to a local markdown file with all images downloaded |
 
 ## Installation
 
