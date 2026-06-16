@@ -19,7 +19,7 @@ You are an **AI-as-judge on the plan**. You produce a structured verdict with pe
 3. **Breaking changes get blast-radius analysis** — you find who consumes the thing being changed, not just note it looks risky.
 4. **Output is structured**, not a prose essay — so the developer can act on blockers and ignore nits.
 
-**You must NOT edit the plan or write code.** Report and propose only. Violating the letter of this rule (e.g. "I'll just fix the obvious typo in the plan") violates its spirit — the developer owns the plan.
+**You must NOT edit the plan or write code.** Report and propose only. Violating the letter of this rule (e.g. "I'll just fix the obvious typo in the plan") violates its spirit — the developer owns the plan. **One bounded exception:** after emitting a PROCEED or PROCEED WITH CHANGES verdict, you may append exactly one status line to the plan file — the verdict marker (see step 8). This records a status stamp; it does not alter plan content.
 
 ## When to Use
 
@@ -81,6 +81,22 @@ If no signal fires, run only ALWAYS + JUDGMENT. Most small plans need no expert 
 
 Create a TodoWrite item per step.
 
+### 0. Dispatch the judgment as a fresh-context subagent
+
+**Bias guardrail.** When this skill runs in the same session that produced the plan, the judging model inherits the producer's framing and justifications — the strongest form of self-preference bias (Chip Huyen, *AI Engineering*). Neutralize this by dispatching the rubric run as a **fresh-context subagent via the Agent tool.**
+
+Pass to the subagent ONLY:
+- The full text of the PLAN+TASKS file
+- The full text of the ticket/spec (and all referenced images)
+- CLAUDE.md for the target project
+- The rubric from this skill (ALWAYS, JUDGMENT, and SIGNAL-GATED dimensions + output format)
+
+Instruct the subagent explicitly: *"Your sole sources of truth are the plan file, the ticket/spec (including all referenced images), and CLAUDE.md. Do not rely on recalled memory, prior conversation context, or any assumptions from outside these documents. Judge the plan on its merits against the rubric."*
+
+Dispatch the subagent with a **strong model** (e.g. `claude-opus-4-8`) to maximize judgment quality. The orchestrating agent collects the subagent's structured verdict and presents it to the developer.
+
+When this skill runs in a fresh session with no prior context, dispatching a subagent still adds the model-routing benefit without redundancy cost.
+
 1. **Read the ticket completely** — text and every referenced image. Extract the AC list.
 2. **Read the PLAN+TASKS file completely.**
 3. **Read CLAUDE.md** for the target project — capture signals (DDD? behavioral-tests-only? monorepo consumer map?).
@@ -92,6 +108,10 @@ Create a TodoWrite item per step.
 5. **Run the ALWAYS + JUDGMENT dimensions.** Invoke signal-gated lenses only where a signal fired.
 6. **Assign a severity to every finding** (see scale below).
 7. **Emit the structured verdict** (see format). Propose plan edits; do not apply them.
+8. **Append the verdict marker to the plan file** — this is the one bounded permitted write.
+   - **Collaborative mode:** offer to append the marker; wait for developer confirmation before writing.
+   - **Auto mode:** if the verdict is PROCEED or PROCEED WITH CHANGES, append automatically (it's a status stamp, not a git write). If the verdict is DO NOT PROCEED (any BLOCKER), halt — do not append anything.
+   - Write exactly one line at the end of the plan file: `> **Plan Review:** PROCEED — YYYY-MM-DD` (substitute the actual verdict and today's date). Do not edit any other line.
 
 ## Severity Scale
 
@@ -130,6 +150,15 @@ Create a TodoWrite item per step.
 
 Always include the **Dimensions clean** and **Grounding verified** sections — they prove the rubric ran and the grounding was checked, not assumed.
 
+## Modes
+
+Check the arguments for `auto`; **collaborative is the default.**
+
+- **Collaborative (default):** run the fresh-context judge subagent (step 0), emit the verdict, then offer to append the verdict marker (step 8) — wait for developer confirmation before writing. A DO NOT PROCEED verdict halts and waits for the developer to address blockers.
+- **Auto:** run the fresh-context judge subagent (step 0), emit the verdict, then append the verdict marker automatically if the verdict is PROCEED or PROCEED WITH CHANGES. A DO NOT PROCEED verdict (any BLOCKER) halts immediately — auto does not proceed past a BLOCKER.
+
+**Invariant in both modes:** never edit plan content; the verdict marker is the only permitted write.
+
 ## Red Flags — STOP
 
 - About to give a verdict with no severities → STOP. Every finding gets BLOCKER / SHOULD-FIX / NIT.
@@ -137,7 +166,8 @@ Always include the **Dimensions clean** and **Grounding verified** sections — 
 - Plan asserts a library API / version / external behavior and you're about to trust it → STOP. Grep the installed package, or SEARCH THE WEB against the official docs. A hallucinated external API is a BLOCKER.
 - Noted a rename/schema/cache/env change but didn't trace consumers → STOP. Do the blast-radius analysis; it's likely a BLOCKER.
 - About to invoke all six expert lenses → STOP. Only invoke a lens whose signal actually fired.
-- About to edit the plan file or write code → STOP. Report and propose only; the developer owns the plan.
+- About to edit the plan file or write code → STOP. Report and propose only; the developer owns the plan. The verdict marker (step 8) is the one bounded exception — one status line only.
+- About to run the judgment inline without dispatching a fresh-context subagent → STOP. The bias guardrail requires a fresh context (step 0).
 - Emitting a prose essay with no verdict line → STOP. Use the structured format.
 
 ## Common Mistakes

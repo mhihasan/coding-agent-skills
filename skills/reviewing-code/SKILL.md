@@ -81,6 +81,8 @@ Single message, multiple Agent calls. Each agent receives:
 - The relevant **check definition** (from the reference file), the **severity scale**, the **false-positive rules**, **CLAUDE.md** if present, and — pipeline mode — the plan/task content. PR general mode — the intent summary.
 - For language checks that call for it, the **2-Level Tracing Protocol** (below).
 
+**Fresh-context + strong model.** Each agent is dispatched with ONLY the inputs listed above — no prior conversation, no memory. Each judge is independently unanchored to the producer's framing (self-preference bias guardrail). Dispatch with a **strong model** (e.g. `claude-opus-4-8`) for maximum judgment quality. Model routing is applied at the dispatch, not pinned in brittle frontmatter.
+
 ### 7. Compile
 
 Collect findings → deduplicate (same file:line: keep highest severity, merge insights, file under most relevant category) → determine verdict → emit the report.
@@ -153,8 +155,17 @@ When the developer says findings are addressed: load the original report, build 
 
 Once the verdict is PASS (or PASS WITH FINDINGS the developer accepts):
 
-1. The developer manually runs `crafting-commits` to rewrite the branch into a clean conventional-commit history. This is human-gated — `crafting-commits` proposes and prints commands; the developer runs them.
+1. **Run `crafting-commits`** — this is a **mandatory pipeline step**, not optional. A clean conventional-commit history is required before `finishing-a-development-branch`. `crafting-commits` proposes the rewritten history and prints the exact git commands; the developer reviews and runs them. Mandatory to invoke; human-gated to execute.
 2. Then `finishing-a-development-branch` may be used **only** to present merge/PR/keep/discard options, print the exact git commands, and clean up a worktree. It must not commit, push, merge, or open a PR on its own initiative — the developer runs all git writes.
+
+## Modes
+
+Check the arguments for `auto`; **collaborative is the default.**
+
+- **Collaborative (default):** propose triage scope (step 5), wait for developer confirmation, then launch agents (step 6). A ❌ FAIL or ❌ REQUEST CHANGES verdict halts and waits for the developer to address findings.
+- **Auto:** proceed with the proposed Run set from step 5 without waiting for confirmation; launch agents immediately. A ❌ FAIL / ❌ REQUEST CHANGES verdict still halts — auto does not proceed past a must-fix finding.
+
+**Invariant in both modes:** read-only — never write or fix code; the developer acts on findings.
 
 ## You Must NOT
 

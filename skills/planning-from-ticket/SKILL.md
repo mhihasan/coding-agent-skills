@@ -1,6 +1,6 @@
 ---
 name: planning-from-ticket
-description: "Use when the user points to a local Jira ticket or spec markdown file and wants an implementation plan written to a PLAN file beside it. Triggers on phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an implementation plan for this spec'. Assumes the ticket is already on disk — does not fetch from Jira."
+description: "Use when the user points to a local Jira ticket or spec markdown file and wants an implementation plan written to a PLAN file beside it. Triggers on phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an implementation plan for this spec'. Assumes the ticket is already on disk — does not fetch from Jira. Pass 'auto' as argument for autonomous mode; default is collaborative."
 license: MIT
 ---
 
@@ -12,7 +12,9 @@ You are a thin orchestrator. You own the read → explore → decide → review 
 
 ## Core Principle
 
-**The user must approve the plan in chat before the file is written.** "Write a plan to a file" is a request for a *reviewed* plan, not a request to skip review. Writing the file is the LAST step, never the first deliverable.
+**A plan must be reviewed before it is trusted.** "Write a plan to a file" is a request for a *reviewed* plan, not a request to skip review. Writing the file is the LAST step, never the first deliverable.
+
+In **collaborative mode** (default), the reviewer is the developer — present the plan in chat and get explicit approval before writing any file. In **auto mode**, the chat-gate is replaced by self-review (step 4) plus the independent `reviewing-plan` judge — the discipline is identical, the reviewer changes. Auto mode does NOT mean "write without review." Whether the design is over-engineered, or a breaking change is acceptably handled, is `reviewing-plan`'s call — do not self-adjudicate it in step 4.
 
 **REQUIRED SUB-SKILL:** Use superpowers:brainstorming for the clarifying-question and design-proposal dialogue. Do not re-implement that conversation here — invoke it for the thinking, and use this skill for the ticket-specific workflow and the file output.
 
@@ -67,6 +69,7 @@ Before presenting anything, review your own draft against these criteria and fix
 | Scope is tight | Nothing in the change list goes beyond what the ticket explicitly asks for |
 | Verification is concrete | Every command has an expected output, not just "run tests" |
 | Grounded in reality | Every file path and pattern reference was read in step 2 — no assumptions |
+| Grounding verified | Every file path / function / API named in the plan was actually read or grepped in step 2 — no plausible-but-unverified references. Objective check: "did you read it, yes/no" |
 | Out-of-scope is explicit | At least one item listed; "N/A" is only valid for trivial single-line tickets |
 
 If any check fails, fix the plan before proceeding. Do not present a draft you know has gaps — the developer's review is for judgment calls, not for catching incomplete work.
@@ -97,6 +100,15 @@ Scale each section to the work; omit what doesn't apply.
 - **Testing** — the test approach (behavioral unless the project says otherwise)
 - **Verification** — the commands that must pass (build / lint / test)
 - **Out of scope** — what this deliberately does NOT do
+
+## Modes
+
+Check the arguments for `auto`; **collaborative is the default.**
+
+- **Collaborative (default):** Resolve open questions via AskUserQuestion; present the full plan in chat; wait for explicit developer approval before writing the file. The developer is the reviewer.
+- **Auto:** Resolve decisions using the recommended option where defensible; skip the chat presentation; write the file after step 4 self-review passes. Stop only on unresolvable ambiguity (when no defensible recommended option exists). The plan must still clear `reviewing-plan` before `implementing-tasks` starts — the chat-gate is replaced by the independent judge, not dropped.
+
+**Invariants in both modes:** never overwrite an existing PLAN file without asking; never start implementation from this skill.
 
 ## Red Flags — STOP
 

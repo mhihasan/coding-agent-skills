@@ -1,6 +1,6 @@
 ---
 name: generating-tasks
-description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-ticket) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Does not gather requirements or write implementation code."
+description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-ticket) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Does not gather requirements or write implementation code. Pass 'auto' as argument for autonomous mode; default is collaborative."
 license: MIT
 model: inherit
 color: peachpuff
@@ -46,6 +46,13 @@ Do not modify the plan's existing content above your tasks — that belongs to w
 - **Project conventions over assumptions** — read CLAUDE.md (if present) and scan existing test/source files to learn real paths, naming, and test framework. Never hardcode a directory layout; derive it from the project.
 - **ADOPT:** Follow superpowers:writing-plans bite-sized-task discipline — each task should complete in ~2–5 minutes, be one concrete action with complete code (no placeholders, no "similar to above"), an exact run command, and the expected output. A task spec that leaves any step as TBD is not done.
 
+## Modes
+
+Check the arguments for `auto`; **collaborative is the default.**
+
+- **Collaborative (default):** pause until the developer agrees on the test plan (step 2), then on the full spec (step 3), before appending.
+- **Auto:** draft the test plan → self-review → append, with no forward-progress pauses. Stop only on genuine ambiguity you can't resolve from the plan + codebase. The self-review (step 3.5) still runs, and `reviewing-plan` is the downstream judge. Auto never edits the plan's existing content — it only appends.
+
 ## Conversation Flow
 
 A natural progression — not a rigid pipeline. Let the conversation go where it needs to.
@@ -73,6 +80,23 @@ List every scenario you can identify. **Do not move on until the developer agree
 ### 3. Build the full task spec
 
 Once the test plan is agreed, fill in: description/context, implementation notes (with pattern references found by scanning the project), scope boundaries (from the plan + anti-gold-plating additions), expected files (new/modified/must-not-touch), and dependencies. Present for review; adjust.
+
+### 3.5. Self-review the spec — before appending
+
+Before appending anything, review your own draft against this checklist and fix any failure. These
+are objective checks — they run in **both** modes (they are not collaboration pauses).
+
+| Check | Pass condition |
+|---|---|
+| No orphan ACs | Every AC / functional requirement in the plan maps to ≥1 test scenario |
+| No invented work | Every task traces to a plan decision; nothing added the plan didn't ask for |
+| No placeholders | Complete paths, complete scenarios — no TBD / "similar to above" (composes with the writing-plans ADOPT line) |
+| Behavioral tests | Scenarios phrased as observable behavior, not internal mechanics (private fields, mock-call counts) |
+| Scope bounded | Each task has Scope Boundaries incl. anti-gold-plating "Do NOT" items, and Files Expected with reasons |
+| Right-sized | No `xl` task; each ~3–8 scenarios / 2–5-min steps — else a split was proposed |
+
+The deeper *subjective* judgment (is this over-engineered? is decomposition right?) is `reviewing-plan`'s
+job, not this self-review's — don't self-adjudicate it here.
 
 ### 4. Append to the plan file
 
@@ -157,7 +181,8 @@ A well-sized task supports a tight TDD cycle: ~2-4 production files, ~3-8 test s
 - Add requirements not in the plan (flag as suggestions instead).
 - Produce an `xl` task without proposing a split.
 - Assume on ambiguity — ask.
-- Skip the test-plan-draft step — the developer must agree on scenarios first.
+- Skip the test-plan-draft step — the developer must agree on scenarios first (collaborative mode).
+- Append tasks to the plan file without running the step-3.5 self-review first (both modes).
 - Modify the plan content above your task specs — you only append.
 - Hardcode file paths — infer them from the project's conventions.
 - Point the developer to implementation as the next step — point them to `reviewing-plan` first.

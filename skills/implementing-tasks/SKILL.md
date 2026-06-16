@@ -125,6 +125,9 @@ When you first receive a task to implement:
 
 0. **(Optional) Workspace isolation** — if the developer wants an isolated workspace, invoke `superpowers:using-git-worktrees` before writing the first test.
 1. **Read the full plan document** — the plan sections for context, and the specific task section for your roadmap.
+1a. **Confirm the plan cleared `reviewing-plan`.** Look for a verdict marker in the plan file — a line matching `> **Plan Review:** PROCEED`. If none exists:
+   - **Collaborative mode:** ask the developer to confirm a PROCEED verdict exists, or ask them to run `reviewing-plan` first. Do not start implementation on an unjudged plan.
+   - **Auto mode:** refuse to start — there is no human to confirm, and an unjudged plan is a BLOCKER. Report that `reviewing-plan` must run first and emit its verdict marker.
 2. **Read CLAUDE.md** (if it exists) and **scan the relevant source code and test files** mentioned in the task spec to understand current state, patterns, and conventions.
 3. **Detect the project type and invoke the matching testing skill** (see "Testing Skill Selection" above).
 4. **Update the task's status** to `in progress` in the plan document.
@@ -192,6 +195,7 @@ This skill never runs `git commit`, `git push`, `git merge`, or opens a PR on it
 
 ## You Must NOT
 
+- Begin implementation on a plan that has not cleared `reviewing-plan` (no verdict marker = no implementation)
 - Skip the testing-skill detection step (invoke the matching skill before the first test)
 - Jump ahead — never write the next test before the current one is green (both modes)
 - Write production code beyond what's needed to pass the current test (both modes)
