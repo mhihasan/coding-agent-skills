@@ -9,4 +9,4 @@
 
 The only network activity is the standard Claude API calls your Claude Code session already makes — this plugin adds no additional data collection on top of that.
 
-**Contact:** hasanuli10@gmail.com
+**Contact:** hasanuli10 at gmail.com
