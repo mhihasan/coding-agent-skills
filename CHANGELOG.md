@@ -23,6 +23,36 @@ All notable changes to coding-agent-skills are documented here.
 - `reviewing-code` Next Steps: `crafting-commits` changed from suggestion to mandatory gate
 - README: hook rewritten, quickstart added, superpowers sub-skills table added, repo renamed to `coding-agent-skills`
 
+## [0.2.0](https://github.com/mhihasan/coding-agent-skills/compare/v0.1.0...v0.2.0) (2026-06-16)
+
+
+### Features
+
+* write commit plan to ticket directory when ticket dir exists ([b8e0da9](https://github.com/mhihasan/coding-agent-skills/commit/b8e0da97a8081314eb4b254f4705610082970f60))
+
+
+### Bug Fixes
+
+* replace shields.io badges with badgen.net ([2d7f5be](https://github.com/mhihasan/coding-agent-skills/commit/2d7f5becc7143650518548a845759b93c3a6da03))
+* replace shields.io badges with badgen.net to avoid token pool errors ([ef61277](https://github.com/mhihasan/coding-agent-skills/commit/ef6127771ac275fd99b73a48253573de0e3474cf))
+
+## [0.1.0](https://github.com/mhihasan/coding-agent-skills/compare/v0.0.1...v0.1.0) (2026-06-16)
+
+
+### Features
+
+* add Claude plugin manifest and marketplace for distribution ([e43fea7](https://github.com/mhihasan/coding-agent-skills/commit/e43fea7896243c64256f430e7d021a3aee80aafa))
+* add Claude plugin manifest and marketplace for distribution ([0606d61](https://github.com/mhihasan/coding-agent-skills/commit/0606d61ce81bb7c2ff532bdcc27cfd24c9305cce))
+
+
+### Bug Fixes
+
+* disable MD004 for Release Please generated CHANGELOG ([1a2eaec](https://github.com/mhihasan/coding-agent-skills/commit/1a2eaec1a69bad543177e7513baba309ee0a16a4))
+* disable MD004 for Release Please generated CHANGELOG ([bc8db49](https://github.com/mhihasan/coding-agent-skills/commit/bc8db495f948ae0fc1e4dd075e7377082450995a))
+* resolve pre-commit linting failures ([cb91702](https://github.com/mhihasan/coding-agent-skills/commit/cb91702edf26f6a48af4f2f1b553213c7923220f))
+* silence noisy markdownlint rules; fix broken TOC link ([6dc3f7a](https://github.com/mhihasan/coding-agent-skills/commit/6dc3f7a817f1b8fa0144648f1040c959315a3ef8))
+* silence noisy markdownlint rules; fix broken TOC link in component-patterns ([75e3449](https://github.com/mhihasan/coding-agent-skills/commit/75e34493d7fb697e727d1e2642cf3e1f7f877536))
+
 ## 0.1.0 — Initial release
 
 Pipeline skills: `fetching-tickets`, `planning-from-ticket`, `generating-tasks`, `reviewing-plan`, `implementing-tasks`, `reviewing-code`, `crafting-commits`.
