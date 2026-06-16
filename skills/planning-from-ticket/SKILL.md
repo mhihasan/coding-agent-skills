@@ -23,9 +23,11 @@ You are a thin orchestrator. You own the read → explore → decide → review 
 - "Plan out this spec before we code."
 
 **When NOT to use:**
-- The ticket isn't on disk yet → fetch it first (a tracker-to-markdown skill), then use this.
+- The ticket isn't on disk yet → fetch it first with `fetching-tickets`, then use this.
 - The user wants to start coding now → this skill stops at the plan file.
 - Planning a whole project/epic spanning many features → use a project-level planning skill.
+
+**Next step:** once the plan file is written, the developer typically runs `generating-tasks` to add TDD task specs to it.
 
 ## Workflow
 

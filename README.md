@@ -19,8 +19,42 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 | `pytest-expert` | Opinionated pytest best practices for Python |
 | `system-designing` | Kleppmann & Riccomini — *Designing Data-Intensive Applications* (2nd ed.) |
 | `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
-| `jira-to-markdown` | Pull a Jira ticket to a local markdown file with all images downloaded |
-| `plan-from-ticket` | Turn a local ticket/spec file into a reviewed implementation `PLAN-<KEY>.md` beside it |
+
+### Ticket → Ship workflow
+
+These skills chain into a single feature-development pipeline (see [Workflow Pipeline](#workflow-pipeline)):
+
+| Skill | What it does |
+|---|---|
+| `fetching-tickets` | Pull a Jira ticket to a local markdown file with all images downloaded |
+| `planning-from-ticket` | Turn a local ticket/spec file into a reviewed implementation `PLAN-<KEY>.md` beside it |
+| `generating-tasks` | Append TDD-ready task specs into the `PLAN-<KEY>.md` |
+| `reviewing-plan` | Judge the PLAN+TASKS against the ticket *before* any code is written |
+| `implementing-tasks` | Implement a task spec via TDD, auto-selecting the project's testing skill |
+| `reviewing-code` | Triage-first code review of implemented code / a PR / a diff |
+
+## Workflow Pipeline
+
+The ticket → ship skills are designed to run in sequence. This is the single
+source of truth for the flow — individual skills only reference their immediate
+neighbors, not the whole chain.
+
+```
+fetching-tickets       Jira ticket  →  local TICKET-<KEY>.md
+        │
+planning-from-ticket   ticket       →  reviewed PLAN-<KEY>.md (beside it)
+        │
+generating-tasks       plan         →  PLAN-<KEY>.md + appended "# Tasks"
+        │
+reviewing-plan         PLAN+TASKS   →  verdict (scope, over-engineering, breaking changes) BEFORE code
+        │
+implementing-tasks     task spec    →  working code via TDD
+        │
+reviewing-code         code/PR/diff →  triage-first review report
+```
+
+Each step is independently usable — you can enter at any point if the upstream
+artifact already exists (e.g. run `reviewing-code` on any PR with no plan).
 
 ## Installation
 

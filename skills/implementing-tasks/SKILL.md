@@ -165,6 +165,8 @@ Once every test scenario from the task spec has been through the RED → GREEN �
 4. **Summarize what was done:** which testing skill was used, files created, files modified, all tests passing.
 5. Let the developer know the task is ready for review.
 
+**Next step:** suggest the developer run `reviewing-code` on the implementation when they're ready — but the review is their call to make, not yours to invoke.
+
 ## You Must NOT
 
 - Skip the testing-skill detection step (invoke the matching skill before the first test)
