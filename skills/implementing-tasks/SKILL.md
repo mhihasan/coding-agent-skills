@@ -169,7 +169,7 @@ Once every test scenario from the task spec has been through the RED → GREEN �
 4. **Summarize what was done:** which testing skill was used, files created, files modified, all tests passing.
 5. Let the developer know the task is ready for review.
 
-**Mid-task review gate (optional but recommended for multi-task plans):** after each task passes, invoke `superpowers:requesting-code-review` before starting the next task. Act on its findings using `superpowers:receiving-code-review` — verify each finding against codebase reality before fixing, push back with technical reasoning on findings that don't hold up. Critical findings block the next task; lower-severity findings are the developer's call.
+**Mid-task review gate:** if there is a next task, invoke `superpowers:requesting-code-review` before starting it. Act on its findings using `superpowers:receiving-code-review` — verify each finding against codebase reality before fixing, push back with technical reasoning on findings that don't hold up. Critical findings block the next task; lower-severity findings are the developer's call.
 
 **Next step:** once all tasks are done, suggest the developer run `reviewing-code` for the final end-to-end review — but the review is their call to make, not yours to invoke.
 
