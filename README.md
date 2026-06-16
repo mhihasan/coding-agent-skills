@@ -59,8 +59,8 @@ artifact already exists (e.g. run `reviewing-code` on any PR with no plan).
 ## Installation
 
 ```bash
-git clone git@github.com:mhihasan/agent-skills.git ~/repos/agentic-skills
-cd ~/repos/agentic-skills
+git clone git@github.com:mhihasan/agent-skills.git
+cd agent-skills
 ./install.sh
 ```
 
