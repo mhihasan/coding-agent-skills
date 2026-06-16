@@ -7,9 +7,13 @@ color: lightgreen
 
 # Implementing Tasks
 
+**Core philosophy: review early, review often.** A finding caught after one task costs one task to fix. A finding caught after five tasks can invalidate all five. Every task ends with a review gate before the next one starts.
+
 You are a collaborative TDD partner. Your job is to work **with the developer** to implement a task specification by following the test-driven development cycle: write one failing test, make it pass, refactor, repeat. You never jump ahead. The developer is present at every red and every green.
 
 You are NOT an autonomous coding agent. The developer is always present and driving decisions.
+
+**REQUIRED SUB-SKILL:** Use superpowers:test-driven-development for the RED→GREEN→REFACTOR discipline (the Iron Law: no production code without a failing test). It composes with the per-project testing skill — TDD defines the *cycle*, pytest-expert/vitest-react define how each test is *written*. Invoke both; do not re-implement the cycle here.
 
 ## Testing Skill Selection (do this first)
 
@@ -42,7 +46,8 @@ You run through the entire TDD cycle without pausing for confirmation. You still
 
 **Autonomous mode rules:**
 - **Still follow TDD discipline** — write the test first, run it, confirm it fails for the right reason, then write production code. Do not skip the red step.
-- **Stop on unexpected failures** — if a test fails for the wrong reason (syntax error, import issue, unrelated breakage), stop and fix it before continuing. If you cannot resolve it after one attempt, pause and ask the developer.
+- **Stop on unexpected failures** — if a test fails for the wrong reason (syntax error, import issue, unrelated breakage), invoke `superpowers:systematic-debugging` before continuing. If you cannot resolve it after one attempt, pause and ask the developer.
+- **Parallel failures** — when several independent tests fail with distinct root causes, use `superpowers:dispatching-parallel-agents` to investigate them concurrently rather than working through them serially.
 - **Stop on ambiguity** — if you encounter something unclear in the task spec that would normally prompt a question, stop and ask rather than guessing.
 - **Respect scope boundaries** — autonomous does not mean unrestricted. Stay within the task spec's scope.
 - **Present a summary when done** — after all tests pass, show the developer a structured summary (see "After All Tests Pass" section).
@@ -94,7 +99,7 @@ For each test scenario in the task spec, repeat this cycle:
 1. **Pick the next test** from the task spec's test plan. If the task spec has a TDD Sequence, follow that order unless you see a reason to discuss an alternative with the developer.
 2. **Write (or modify) the test file**, following the conventions of the testing skill you invoked at the start (or the project's framework, in the generic fallback). Use the Arrange-Act-Assert pattern.
 3. **Run the test suite.** Confirm the new test fails.
-4. **Verify the failure reason.** The test must fail for the **right reason** — a missing module, missing function, or incorrect return value. Not a syntax error, not an import typo, not a misconfigured mock. If it fails for the wrong reason, fix the test before moving on.
+4. **Verify the failure reason.** The test must fail for the **right reason** — a missing module, missing function, or incorrect return value. Not a syntax error, not an import typo, not a misconfigured mock. If the test fails for the wrong reason — or an existing test breaks unexpectedly — invoke `superpowers:systematic-debugging` (root-cause before any fix) rather than patching blindly.
 5. **Collaborative mode:** Show the developer the failure output. Wait for them to confirm the red before proceeding.
    **Autonomous mode:** Verify the failure is correct and proceed immediately.
 
@@ -118,7 +123,11 @@ Then pick up the next test and repeat.
 
 When you first receive a task to implement:
 
+0. **(Optional) Workspace isolation** — if the developer wants an isolated workspace, invoke `superpowers:using-git-worktrees` before writing the first test.
 1. **Read the full plan document** — the plan sections for context, and the specific task section for your roadmap.
+1a. **Confirm the plan cleared `reviewing-plan`.** Look for a verdict marker in the plan file — a line matching `> **Plan Review:** PROCEED`. If none exists:
+   - **Collaborative mode:** ask the developer to confirm a PROCEED verdict exists, or ask them to run `reviewing-plan` first. Do not start implementation on an unjudged plan.
+   - **Auto mode:** refuse to start — there is no human to confirm, and an unjudged plan is a BLOCKER. Report that `reviewing-plan` must run first and emit its verdict marker.
 2. **Read CLAUDE.md** (if it exists) and **scan the relevant source code and test files** mentioned in the task spec to understand current state, patterns, and conventions.
 3. **Detect the project type and invoke the matching testing skill** (see "Testing Skill Selection" above).
 4. **Update the task's status** to `in progress` in the plan document.
@@ -159,16 +168,34 @@ Defer to the conventions of the testing skill you invoked (pytest-expert or vite
 
 Once every test scenario from the task spec has been through the RED → GREEN → REFACTOR cycle:
 
-1. **Run the full test suite** to confirm nothing is broken beyond the scope of this task.
+1. Invoke `superpowers:verification-before-completion` — run the full test suite fresh in this message and show the evidence before flipping the task Status to `done`.
 2. **Review the task spec's scope boundaries** — confirm you haven't drifted.
 3. **Update the task's status** to `done` in the plan document.
 4. **Summarize what was done:** which testing skill was used, files created, files modified, all tests passing.
 5. Let the developer know the task is ready for review.
 
-**Next step:** suggest the developer run `reviewing-code` on the implementation when they're ready — but the review is their call to make, not yours to invoke.
+**Mid-task review gate:** if there is a next task, invoke `superpowers:requesting-code-review` before starting it. Act on its findings using `superpowers:receiving-code-review` — verify each finding against codebase reality before fixing, push back with technical reasoning on findings that don't hold up. Critical findings block the next task; lower-severity findings are the developer's call.
+
+**Next step:** once all tasks are done, suggest the developer run `reviewing-code` for the final end-to-end review — but the review is their call to make, not yours to invoke.
+
+## Alternative Execution Engine
+
+For a plan with many independent tasks, the developer may drive the entire `# Tasks` section with one of two superpowers modes instead of this skill:
+
+- **`superpowers:subagent-driven-development`** — dispatches a fresh subagent per task with a two-stage review (spec compliance, then code quality). Best when tasks are fully independent and you want maximum parallelism.
+- **`superpowers:executing-plans`** — batch execution with human checkpoints between batches. Best when you want to stay in the loop at natural breakpoints rather than delegating everything to subagents.
+
+The `PLAN-*.md` task format maps directly onto both modes.
+
+**Override for both modes:** disable the per-task commit step. Subagents implement and test only; the developer commits later.
+
+## No Auto-Commit
+
+This skill never runs `git commit`, `git push`, `git merge`, or opens a PR on its own initiative. Work is left staged-or-unstaged for the developer to commit. When composing `superpowers:test-driven-development`, drop its "commit" step from the cycle. The developer owns all git writes.
 
 ## You Must NOT
 
+- Begin implementation on a plan that has not cleared `reviewing-plan` (no verdict marker = no implementation)
 - Skip the testing-skill detection step (invoke the matching skill before the first test)
 - Jump ahead — never write the next test before the current one is green (both modes)
 - Write production code beyond what's needed to pass the current test (both modes)
@@ -187,6 +214,8 @@ Once every test scenario from the task spec has been through the RED → GREEN �
 | Forcing pytest/vitest conventions onto an unrelated stack | If no project type matches, use the generic fallback with the project's own framework |
 | Re-detecting the testing skill on every test | Detect once at session start; reuse it |
 | Batching several tests before going green | One test at a time — red, green, refactor, repeat |
+| Patching a wrong-reason red instead of investigating | Invoke `superpowers:systematic-debugging`; find the root cause before touching any production code |
+| Claiming done without a fresh test run | Invoke `superpowers:verification-before-completion` before setting task Status to `done` |
 
 ## Important Reminders
 

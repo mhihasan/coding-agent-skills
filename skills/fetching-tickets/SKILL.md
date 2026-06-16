@@ -259,6 +259,30 @@ tickets/
 
 Reference images with relative paths: `![filename](images/filename.png)`
 
+## Self-Review Before Handoff
+
+Before declaring the ticket file done, review your own output against this checklist and fix any
+failure. These are objective checks — they run in **both** collaborative and `auto` mode.
+
+| Check | Pass condition |
+|---|---|
+| AC present | Acceptance Criteria custom field discovered and included (not left in `description`) |
+| Real content only | `has_real_content()` filter applied — no empty wiki tables, italic placeholders, "No X logged" |
+| All images local | Every image referenced in rendered HTML downloaded to `images/` and inlined at its rendered position |
+| Section order | Matches rendered HTML exactly; no invented sub-headers |
+| Relations present | Subtasks + Linked Work Items rendered (even when "None") |
+| Bots filtered | Comments where `author.accountType == "app"` excluded |
+| Blocking deps surfaced | If Linked Work Items contains an unresolved "is blocked by", flag it explicitly to the developer (collaborative) or record it prominently in the file (`auto`) — this ticket may not be ready to start |
+
+**Red flag — STOP:** About to hand off the ticket file without running this self-review → STOP. Run it first.
+
+## Modes
+
+This skill is mechanical, so the mode mostly affects how a blocking dependency is handled:
+
+- **Collaborative (default):** if a self-review check fails or a blocking dependency surfaces, raise it with the developer.
+- **Auto:** record the blocker prominently in the ticket file and continue; the fetch itself doesn't pause.
+
 ## Common Mistakes
 
 | Mistake | Fix |

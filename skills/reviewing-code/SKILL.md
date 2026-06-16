@@ -33,6 +33,7 @@ Create a TodoWrite item per step.
 
 - Confirm a git repo (`git rev-parse --is-inside-work-tree`). PR mode: `gh` installed + authed. Branch mode: branch exists. Diff mode: file exists.
 - Detect default branch: `git remote show origin`, else `git branch -l main master`, else `main`.
+- **ADOPT:** `superpowers:requesting-code-review`'s SHA convention — capture `HEAD_SHA` (`git rev-parse HEAD`) and `BASE_SHA` (`git merge-base HEAD origin/<base>`) to bound the review diff precisely. Reference these SHAs in the report so re-review agents target the exact same diff.
 - **Diff size:** >3000 lines → warn about token cost, offer to scope. >8000 → strongly recommend scoping / batching.
 - If a check fails, stop and report. Don't proceed on empty/invalid data.
 
@@ -79,6 +80,8 @@ Single message, multiple Agent calls. Each agent receives:
 - **Filtered diff** — only files in its domain (React agent gets `.tsx/.jsx/.css`; DB agent gets query/model/migration files; security gets routes/middleware). Never the whole diff to every agent.
 - The relevant **check definition** (from the reference file), the **severity scale**, the **false-positive rules**, **CLAUDE.md** if present, and — pipeline mode — the plan/task content. PR general mode — the intent summary.
 - For language checks that call for it, the **2-Level Tracing Protocol** (below).
+
+**Fresh-context + strong model.** Each agent is dispatched with ONLY the inputs listed above — no prior conversation, no memory. Each judge is independently unanchored to the producer's framing (self-preference bias guardrail). Dispatch with a **strong model** (e.g. `claude-opus-4-8`) for maximum judgment quality. Model routing is applied at the dispatch, not pinned in brittle frontmatter.
 
 ### 7. Compile
 
@@ -145,6 +148,24 @@ Sections: **Metadata** (mode, target, date, stack, checks run/skipped, files/lin
 ## Re-review Protocol
 
 When the developer says findings are addressed: load the original report, build a verification checklist from its must-fix/should-fix items, re-read ONLY the files that had findings (don't re-run clean checks), mark each ✅ Resolved / ⚠️ Partial / ❌ Still present, check for regressions in those files, and emit a **delta report** (not a full new one) with an updated verdict.
+
+**ADOPT:** `superpowers:receiving-code-review` discipline for acting on findings — verify each finding against codebase reality before fixing, push back with technical reasoning when a finding is wrong (cite the relevant code), and never emit performative agreement ("you're absolutely right", "great catch"). Accept only findings that hold up under scrutiny.
+
+## Next Steps
+
+Once the verdict is PASS (or PASS WITH FINDINGS the developer accepts):
+
+1. **Run `crafting-commits`** — this is a **mandatory pipeline step**, not optional. A clean conventional-commit history is required before `finishing-a-development-branch`. `crafting-commits` proposes the rewritten history and prints the exact git commands; the developer reviews and runs them. Mandatory to invoke; human-gated to execute.
+2. Then `finishing-a-development-branch` may be used **only** to present merge/PR/keep/discard options, print the exact git commands, and clean up a worktree. It must not commit, push, merge, or open a PR on its own initiative — the developer runs all git writes.
+
+## Modes
+
+Check the arguments for `auto`; **collaborative is the default.**
+
+- **Collaborative (default):** propose triage scope (step 5), wait for developer confirmation, then launch agents (step 6). A ❌ FAIL or ❌ REQUEST CHANGES verdict halts and waits for the developer to address findings.
+- **Auto:** proceed with the proposed Run set from step 5 without waiting for confirmation; launch agents immediately. A ❌ FAIL / ❌ REQUEST CHANGES verdict still halts — auto does not proceed past a must-fix finding.
+
+**Invariant in both modes:** read-only — never write or fix code; the developer acts on findings.
 
 ## You Must NOT
 

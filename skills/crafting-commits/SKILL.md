@@ -8,6 +8,10 @@ description: >
 
 Analyzes changes on a feature branch, evaluates the semantic quality of existing commits, and produces a clean conventional-commit history that helps reviewers navigate a PR. Outputs a human-readable plan (markdown) for approval before touching anything.
 
+**No auto-commit:** This skill proposes the rewritten history and prints the exact git commands. The developer reviews and runs all git operations — this skill never self-initiates `git commit`, `git reset`, `git push`, or `git merge`. The human-review gate in Step 5 is mandatory and cannot be skipped.
+
+**Modes:** Check the arguments for `auto`; **collaborative is the default.** In collaborative mode you produce the plan, present it, and execute on confirmation (Step 6). In `auto` mode you produce and self-review the plan with no conversational pauses, then **stop at the execution boundary** — `auto` does **not** relax the git gate. Even in `auto`, the developer triggers every git command. `auto` only removes the chit-chat, never the Step 5 gate.
+
 ---
 
 ## Workflow
@@ -182,6 +186,21 @@ echo "Force push when ready: git push --force-with-lease"
 ```
 
 ---
+
+### Step 4.5 — Self-review the commit plan
+
+Before presenting the plan to the developer, review it against this checklist and fix any failure.
+These are objective checks — they run in **both** modes (the developer reviews a pre-vetted plan, not
+a first draft).
+
+| Check | Pass condition |
+|---|---|
+| File reconciliation | Every changed file from the diff appears in exactly one proposed commit — no dropped files, none duplicated across commits |
+| Concern separation | No commit mixes unrelated concerns (refactor + feature + fix split apart) |
+| Ordering | Follows the infra → model → logic → integration → UI → tests sequence from Step 3 |
+| Format | Every message is valid `type(scope): description` with a meaningful (non-filename) scope |
+| Linear history | Merge commits excluded; binary/generated files flagged |
+| Script matches | The execution script's `git add` file list reconciles exactly with the diff's file list |
 
 ### Step 5 — Human review
 
