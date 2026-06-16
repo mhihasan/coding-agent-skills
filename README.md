@@ -1,8 +1,5 @@
 # coding-agent-skills
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Last commit](https://badgen.net/github/last-commit/mhihasan/coding-agent-skills)](https://github.com/mhihasan/coding-agent-skills/commits/main)
-[![Stars](https://badgen.net/github/stars/mhihasan/coding-agent-skills)](https://github.com/mhihasan/coding-agent-skills/stargazers)
 
 **Skills for AI coding agents** — a full Jira-to-PR pipeline with self-review gates at every artifact boundary and an independent AI-as-judge before you ship.
 
