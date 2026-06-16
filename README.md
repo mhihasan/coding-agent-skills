@@ -204,6 +204,157 @@ Standalone, book-grounded skills usable on their own or within the workflow abov
 | `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
 | `crafting-commits` | Analyzes a branch and rewrites commit history using conventional commits (human-gated) |
 
+## Skills Reference
+
+### Pipeline skills
+
+#### `fetching-tickets`
+
+Pulls a Jira ticket to a local markdown file with all images downloaded.
+
+| | |
+|---|---|
+| **Input** | Jira ticket URL or key (`PROJ-123`) |
+| **Output** | `tickets/PROJ-123/PROJ-123.md` + `tickets/PROJ-123/images/` |
+| **Auto mode** | Supported — fetches without pausing |
+| **Requires** | `JIRA_EMAIL` and `JIRA_API_TOKEN` env vars |
+
+```bash
+/fetching-tickets https://yoursite.atlassian.net/browse/PROJ-123
+/fetching-tickets PROJ-123
+```
+
+---
+
+#### `planning-from-ticket`
+
+Turns a local ticket file into a structured implementation plan. Explores the codebase, surfaces decisions, and writes a `PLAN-<KEY>.md` beside the ticket.
+
+| | |
+|---|---|
+| **Input** | Local ticket file (`tickets/PROJ-123/PROJ-123.md`) |
+| **Output** | `tickets/PROJ-123/PLAN-PROJ-123.md` |
+| **Auto mode** | Supported — picks recommended option, skips chat presentation |
+
+```bash
+/planning-from-ticket tickets/PROJ-123/PROJ-123.md
+/planning-from-ticket tickets/PROJ-123/PROJ-123.md auto
+```
+
+---
+
+#### `generating-tasks`
+
+Appends TDD-ready task specs into an existing plan file. Each task includes a test plan, scope boundaries, and files expected.
+
+| | |
+|---|---|
+| **Input** | Plan file (`tickets/PROJ-123/PLAN-PROJ-123.md`) |
+| **Output** | `# Tasks` section appended to the same plan file |
+| **Auto mode** | Supported — drafts and appends without pausing |
+
+```bash
+/generating-tasks tickets/PROJ-123/PLAN-PROJ-123.md
+/generating-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto
+```
+
+---
+
+#### `reviewing-plan`
+
+AI-as-judge that evaluates the plan + tasks against the ticket before any code is written. Dispatches a fresh-context subagent to avoid self-preference bias.
+
+| | |
+|---|---|
+| **Input** | Plan file with tasks (reads the ticket file alongside it automatically) |
+| **Output** | Verdict report with BLOCKER/SHOULD-FIX/NIT findings; appends `> **Plan Review:** PROCEED — YYYY-MM-DD` marker to the plan on pass |
+| **Auto mode** | Supported — appends verdict marker automatically; halts on DO NOT PROCEED regardless |
+| **Verdict** | `PROCEED` / `PROCEED WITH CHANGES` / `DO NOT PROCEED` |
+
+```bash
+/reviewing-plan tickets/PROJ-123/PLAN-PROJ-123.md
+```
+
+`implementing-tasks` refuses to start without a PROCEED marker in the plan file.
+
+---
+
+#### `implementing-tasks`
+
+Implements a task spec via TDD. Auto-selects `pytest-expert` (Python) or `vitest-react` (React) and enforces RED → GREEN → REFACTOR per test.
+
+| | |
+|---|---|
+| **Input** | Plan file + task number (`T1`, `T2`, …) |
+| **Output** | Working code with passing tests; task status updated to `done` in plan file |
+| **Auto mode** | Supported — runs full TDD cycle without pausing; stops on unexpected failures |
+| **Requires** | PROCEED verdict marker in plan file |
+
+```bash
+/implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md        # collaborative — pauses for approval
+/implementing-tasks tickets/PROJ-123/PLAN-PROJ-123.md auto   # auto — no forward-progress pauses
+```
+
+Never self-commits or pushes — code is left staged/unstaged for you to review.
+
+---
+
+#### `reviewing-code`
+
+Triage-first code review. Dispatches parallel AI judges filtered by domain (TypeScript agent sees `.tsx/.jsx`, DB agent sees query/model files, etc.).
+
+| | |
+|---|---|
+| **Input** | Branch name, PR number, staged diff, or diff file; optionally a plan/spec file for pipeline context |
+| **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
+| **Auto mode** | Supported — skips triage confirmation, proceeds directly to review |
+| **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
+
+```bash
+/reviewing-code branch                          # review current branch against main
+/reviewing-code PR-456                          # review a specific PR
+/reviewing-code branch tickets/PROJ-123/PLAN-PROJ-123.md   # pipeline mode with plan context
+```
+
+---
+
+#### `crafting-commits`
+
+Rewrites a messy branch history into clean conventional commits. Produces a human-readable plan — never runs git commands without your approval.
+
+| | |
+|---|---|
+| **Input** | Current git branch (reads history automatically) |
+| **Output** | `local-dev/plans/commit-plan-<TICKET>.md` with proposed commit sequence and a ready-to-run bash script |
+| **Auto mode** | Supported — produces plan without pausing; **always halts before executing any git commands** |
+
+```bash
+/crafting-commits
+/crafting-commits auto
+```
+
+Review the plan, then run the generated script yourself.
+
+---
+
+### Collaborative vs auto mode
+
+Every pipeline skill accepts an optional `auto` argument. **Collaborative is the default.**
+
+| | Collaborative | Auto |
+|---|---|---|
+| Forward-progress pauses (approve plan, confirm test plan, triage scope) | Pause for human | Proceed on own judgment |
+| Git writes (commit / push / merge / PR) | Human-initiated | **Never self-initiated** |
+| Destructive overwrite of existing PLAN file | Ask | **Ask** |
+| Judge halt (DO NOT PROCEED / FAIL verdict) | Halt | **Halt** |
+| Unresolvable ambiguity | Ask | **Ask** |
+
+`auto` removes conversational pauses — it does not remove safeguards. Git boundaries and judge halts are invariants in both modes.
+
+**`auto` does not chain skills.** Even in auto mode, each skill is a discrete command — `/fetching-tickets auto` fetches the ticket and stops. You decide when to invoke the next step.
+
+---
+
 ## Installation
 
 **Option A — Claude Code plugin (recommended):**
