@@ -12,13 +12,13 @@ Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/skills/`.
 | `clean-architecture` | Robert C. Martin — *Clean Architecture* (2017) |
 | `clean-coding` | Robert C. Martin — *Clean Code* (2008) |
 | `ddd-expert` | Eric Evans — *Domain-Driven Design* (2003) |
-| `design-doc-generator` | Generates production-grade architecture docs from a codebase |
 | `design-patterns-expert` | Alexander Shvets — *Dive Into Design Patterns* (2022) |
+| `design-doc-generator` | Generates production-grade architecture docs from a codebase |
 | `pragmatic-engineer` | Thomas & Hunt — *The Pragmatic Programmer* (2019) |
-| `git-commit-craft` | Analyzes a branch and rewrites commit history using conventional commits |
-| `pytest-expert` | Opinionated pytest best practices for Python |
 | `system-designing` | Kleppmann & Riccomini — *Designing Data-Intensive Applications* (2nd ed.) |
+| `pytest-expert` | Opinionated pytest best practices for Python |
 | `vitest-react` | Unit testing for React + Vitest + TypeScript projects |
+| `git-commit-craft` | Analyzes a branch and rewrites commit history using conventional commits |
 
 ### Ticket → Ship workflow
 
