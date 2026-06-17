@@ -15,27 +15,46 @@ flowchart TD
     classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
-    ST(["picking-up-task\nJira URL / key / local file  →  branch + ticket file"]):::sp
-    PFT["planning-from-ticket\nticket file  →  PLAN-KEY.md"]:::pipe
-    GT["generating-tasks\nPLAN-KEY.md  →  Tasks section appended"]:::pipe
-    RP{"reviewing-plan\nAI-as-judge · fresh context · strong model"}:::judge
-    RPR["receiving-plan-review\nverify findings · fix plan"]:::pipe
-    IT["implementing-tasks\nTDD · auto-selects pytest or vitest\nrequires PROCEED marker · mid-task self-review"]:::pipe
-    RC{"reviewing-code\nAI-as-judge · fresh context · strong model"}:::judge
-    RCR["superpowers:receiving-code-review\nverify findings · fix code"]:::sp
-    CC(["crafting-commits\nconventional commits · human-gated"]):::sp
+    ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
+    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-ticket"]:::pipe
+    GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
+    HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
+    RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
+    RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
+    HG2{{"✋ you approve the plan\nor ask to revise it"}}:::gate
+    IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
+    RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
+    RCR["challenge or accept each finding\nfix the code\nsuperpowers:receiving-code-review"]:::sp
+    HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
+    CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
-    ST --> PFT --> GT --> RP
-    RP -->|PROCEED| IT
+    ST --> PFT --> GT --> HG1 --> RP
+    RP -->|PROCEED| HG2
     RP -->|DO NOT PROCEED| RPR
     RPR --> RP
-    IT --> RC
-    RC -->|PASS| CC
+    HG2 --> IT
+    IT -->|all tasks done| RC
+    RC -->|PASS| HG3
     RC -->|FAIL| RCR
     RCR --> RC
+    HG3 --> CC
 ```
 
+## Design Principles
+
+**Review early, review often.** A flaw surfaced before coding costs nothing. The same flaw after five tasks can invalidate all five.
+
+**Two review tiers, split by role.** Self-review handles mechanical checks — cheap, always runs, catches placeholders and format issues. AI-as-judge handles subjective quality calls — fresh context, targeted, catches design and scope problems. Neither replaces the other.
+
+**Human gates are not optional.** Every AI verdict requires your approval before the next step starts. `REVIEW-LOG.md` is the audit trail.
+
+**No self-preference bias.** Judge subagents run in a fresh context with no access to the producing session's framing or justifications.
+
+**Auto mode removes pauses, not safeguards.** Git boundaries and judge halts are invariants in both modes. `auto` is a workflow speed setting, not a bypass.
+
+**Enter at any step.** Every skill is independently usable. The pipeline is resumable, not monolithic — start wherever the upstream artifact already exists.
 
 ## Use cases
 
@@ -161,6 +180,7 @@ Appends TDD-ready task specs into an existing plan file. Each task includes a te
 | **Input** | Plan file (`local-dev/tickets/PROJ-123/PLAN-PROJ-123.md`) |
 | **Output** | `# Tasks` section appended to the same plan file |
 | **Auto mode** | Supported, drafts and appends without pausing |
+| **Writes** | `generating-tasks` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
 /generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
@@ -179,6 +199,8 @@ AI-as-judge that evaluates the plan + tasks against the ticket before any code i
 | **Output** | Verdict report with BLOCKER/SHOULD-FIX/NIT findings; appends `> **Plan Review:** PROCEED — YYYY-MM-DD` marker to the plan on pass |
 | **Auto mode** | Supported, appends verdict marker automatically; on DO NOT PROCEED automatically invokes `receiving-plan-review`, fixes the plan, and re-runs review |
 | **Verdict** | `PROCEED` / `PROCEED WITH CHANGES` / `DO NOT PROCEED` |
+| **Checks** | `generating-tasks` stamp in `REVIEW-LOG.md` |
+| **Writes** | `reviewing-plan` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
 /reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
@@ -223,6 +245,7 @@ Implements a task spec via TDD. Auto-selects `testing-pytest` (Python) or `testi
 | **Output** | Working code with passing tests; task status updated to `done` in plan file |
 | **Auto mode** | Supported, runs full TDD cycle without pausing; stops on unexpected failures |
 | **Requires** | PROCEED verdict marker in plan file |
+| **Checks** | `reviewing-plan` stamp in `REVIEW-LOG.md` |
 
 ```bash
 /implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md        # collaborative, pauses for approval
@@ -243,6 +266,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
 | **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically invokes `superpowers:receiving-code-review`, fixes findings, and re-runs review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
+| **Writes** | `reviewing-code` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
 /reviewing-code branch                                             # review current branch against main
@@ -270,6 +294,7 @@ Rewrites a messy branch history into clean conventional commits. Presents the pl
 | **Input** | Current git branch (reads history automatically) |
 | **Output** | Commit plan presented in chat with proposed sequence and ready-to-run bash script |
 | **Auto mode** | Supported, produces plan without pausing; always halts before executing any git commands |
+| **Checks** | `reviewing-code` stamp in `REVIEW-LOG.md` |
 
 ```bash
 /crafting-commits
@@ -280,7 +305,7 @@ Review the plan in chat, confirm, and the script runs. Reminds you to run `super
 
 ---
 
-### Collaborative vs auto mode
+## Collaborative vs auto mode
 
 Every pipeline skill accepts an optional `auto` argument. **Collaborative is the default.**
 
