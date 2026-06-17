@@ -43,6 +43,19 @@ In **collaborative mode** (default), the reviewer is the developer — present t
 
 Create a TodoWrite item for each step and complete them in order. Do not collapse or skip steps.
 
+### 0. Preflight — check upstream gate
+
+Before any other work, locate `REVIEW-LOG.md` in the same directory as the ticket file (i.e. `<ticket-dir>/REVIEW-LOG.md`) and check for a `picking-up-task` stamp:
+
+```bash
+grep "Human Review:.*picking-up-task" <ticket-dir>/REVIEW-LOG.md
+```
+
+- **Line absent (or file missing):** halt immediately with:
+  > "This step requires a human review stamp from `picking-up-task`. Run `/picking-up-task` first and approve the ticket before planning."
+- **Line present with `AUTO`:** note in output — "Note: upstream `picking-up-task` was AI-conducted in auto mode" — then continue.
+- **Line present with `APPROVED`:** proceed normally.
+
 ### 1. Read the source completely
 
 - Read the ticket/spec markdown end to end.
@@ -92,6 +105,22 @@ If the user requests changes, revise and re-present. Only proceed to step 6 once
 - Write to `<ticket-dir>/PLAN-<KEY>.md`, where `<KEY>` is the ticket key (e.g. `PLAN-PROJ-1234.md`) and `<ticket-dir>` is the directory containing the source file.
 - If that file already exists, ask before overwriting.
 - Structure the file to match exactly what the user approved in chat.
+
+After writing the plan file, open the Review Gate.
+
+**Collaborative mode (default):** The plan was already presented and approved in step 5 — that approval is the gate. Write (or upsert) this line in `<ticket-dir>/REVIEW-LOG.md`:
+
+```
+Human Review: APPROVED — YYYY-MM-DD — planning-from-ticket
+```
+
+Then tell the developer: `Plan written to <path>. Next: /generating-tasks <path>`
+
+**Auto mode:** Write the stamp automatically with `AUTO`:
+
+```
+Human Review: AUTO — YYYY-MM-DD — planning-from-ticket
+```
 
 ## Plan File Structure
 
