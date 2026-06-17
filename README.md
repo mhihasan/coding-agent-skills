@@ -90,34 +90,14 @@ Safe to re-run: existing symlinks are updated, real directories are never overwr
 **Option A: full pipeline from a Jira ticket**
 
 ```bash
-# 1. Start the task (fetch ticket + set up branch)
 /picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
 
-# 2. Plan it
-/planning-from-ticket local-dev/tickets/PROJ-123/PROJ-123.md
-
-# 3. Generate TDD tasks
-/generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
-
-# 4. Judge the plan (AI-as-judge, blocks implementation if findings are blockers)
-/reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
-
-# 5. Implement (refuses to start without a PROCEED verdict marker)
-/implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md auto
-
-# 6. Review the code
-/reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
-
-# 7. Address findings (if any)
-# superpowers:receiving-code-review  — verify each finding, push back on wrong ones, fix genuine ones
-# then re-run /reviewing-code to confirm all findings resolved
-
-# 8. Clean up commits
-/crafting-commits
-# presents plan in chat → confirm → executes
+# Each skill tells you what to run next. The full sequence:
+# /planning-from-ticket → /generating-tasks → /reviewing-plan
+# → /implementing-tasks → /reviewing-code → /crafting-commits
 ```
 
-Each step is independently usable. Enter at any point if the upstream artifact already exists.
+Each skill is independently usable — enter at any point if the upstream artifact already exists.
 
 ---
 
