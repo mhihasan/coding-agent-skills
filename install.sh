@@ -32,12 +32,15 @@ link_skills() {
 
 # ── SCOPE SELECTION ───────────────────────────────────────────────────────────
 
-# Accept --scope user|project as an argument, otherwise prompt
+# Parse arguments
 SCOPE=""
+PROJECT_PATH=""
 for arg in "$@"; do
   case "$arg" in
     --scope=user)    SCOPE="user" ;;
     --scope=project) SCOPE="project" ;;
+    /*)              PROJECT_PATH="$arg" ;;
+    *)               PROJECT_PATH="$(pwd)/$arg" ;;
   esac
 done
 
@@ -47,10 +50,26 @@ echo "────────────────────────�
 
 if [ -z "$SCOPE" ]; then
   echo ""
-  echo "Usage: ./install.sh --scope=user|project"
+  echo "Usage: ./install.sh --scope=user"
+  echo "       ./install.sh --scope=project /path/to/your-project"
   echo ""
   echo "  --scope=user     Install to ~/.claude/skills/  (available in all projects)"
-  echo "  --scope=project  Install to .claude/skills/    (current directory only)"
+  echo "  --scope=project  Install to .claude/skills/ inside the given project directory"
+  echo ""
+  exit 1
+fi
+
+if [ "$SCOPE" = "project" ] && [ -z "$PROJECT_PATH" ]; then
+  echo ""
+  echo "Error: --scope=project requires a project path."
+  echo "Usage: ./install.sh --scope=project /path/to/your-project"
+  echo ""
+  exit 1
+fi
+
+if [ "$SCOPE" = "project" ] && [ ! -d "$PROJECT_PATH" ]; then
+  echo ""
+  echo "Error: project path does not exist: $PROJECT_PATH"
   echo ""
   exit 1
 fi
@@ -65,7 +84,7 @@ if [ "$SCOPE" = "user" ]; then
 fi
 
 if [ "$SCOPE" = "project" ]; then
-  PROJECT_SKILLS="$(pwd)/.claude/skills"
+  PROJECT_SKILLS="$PROJECT_PATH/.claude/skills"
   echo ""
   echo "[project scope] $PROJECT_SKILLS"
   link_skills "$PROJECT_SKILLS"
