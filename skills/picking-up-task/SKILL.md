@@ -192,18 +192,18 @@ Type `approve` to stamp it and proceed, or describe what needs fixing.
    ```
    > **Human Review:** APPROVED — YYYY-MM-DD — picking-up-task
    ```
-2. Print:
-   ```
-   Stamped REVIEW-LOG.md. Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md
-   ```
+2. Ask:
+   > Ready to proceed? `/planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` (yes/no)
+
+   On yes, invoke `/planning-from-ticket <ticket-file>`.
 
 **Auto mode:** Write the stamp automatically with `AUTO`:
 ```
 > **Human Review:** AUTO — YYYY-MM-DD — picking-up-task
 ```
-Then print: `Next: /planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md`
+Then invoke `/planning-from-ticket <ticket-file>` automatically.
 
-No push commands. No extra guidance beyond the next-step line.
+No push commands. No extra guidance beyond the next-step prompt.
 
 ## You Must NOT
 

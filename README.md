@@ -24,7 +24,7 @@ flowchart TD
     HG2{{"✋ you approve the plan\nor ask to revise it"}}:::gate
     IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
     RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
-    RCR["challenge or accept each finding\nfix the code\nsuperpowers:receiving-code-review"]:::sp
+    RCR["challenge or accept each finding\nfix the code"]:::sp
     HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
     CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
@@ -61,8 +61,6 @@ flowchart TD
 **Standalone review** — review any branch or PR without a plan file. Domain-filtered diff, triage-first report with BLOCKER / SHOULD-FIX / NIT severity.
 
 **Architecture docs** — generate a design document from an existing codebase.
-
-**Craft coaching** — book-grounded skills for architecture review (Clean Architecture), DDD modeling, system design Q&A (DDIA), and code quality critique (Clean Code, Pragmatic Programmer).
 
 ## Installation
 
@@ -239,7 +237,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 |---|---|
 | **Input** | Branch name, PR number, staged diff, or diff file — defaults to staged diff if no target given; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
-| **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically invokes `superpowers:receiving-code-review`, fixes findings, and re-runs review |
+| **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically fixes findings and re-runs review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
 | **Writes** | `reviewing-code` stamp in `REVIEW-LOG.md` after you approve |
 
@@ -252,7 +250,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 
 **If the verdict is FAIL (collaborative mode):**
 
-1. Use `superpowers:receiving-code-review` to work through the findings:
+1. Work through the findings:
    - Verify each finding against the actual code before accepting it
    - Push back with reasoning if a finding is wrong
    - Fix only what holds up under scrutiny
@@ -263,7 +261,7 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 
 ### `crafting-commits`
 
-Rewrites a messy branch history into clean conventional commits. Presents the plan in chat for approval, never runs git commands without your confirmation, then reminds you to run `superpowers:finishing-a-development-branch`.
+Rewrites a messy branch history into clean conventional commits. Presents the plan in chat for approval, never runs git commands without your confirmation.
 
 | | |
 |---|---|
@@ -277,7 +275,7 @@ Rewrites a messy branch history into clean conventional commits. Presents the pl
 /crafting-commits auto
 ```
 
-Review the plan in chat, confirm, and the script runs. Reminds you to run `superpowers:finishing-a-development-branch` when ready.
+Review the plan in chat, confirm, and the script runs.
 
 ---
 
@@ -297,23 +295,7 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 
 **`auto` does not chain skills.** Even in auto mode, each skill is a discrete command. `/picking-up-task PROJ-123` fetches the ticket, sets up the branch, and stops. You decide when to invoke the next step.
 
-## Composes with superpowers
-
-This pipeline is artifact-centric, Jira-native, and resumable. The
-[superpowers plugin](https://claude.com/plugins/superpowers) adds cross-cutting
-discipline at key points: TDD Iron Law, debugging, verification, git worktrees, close-out.
-
-**The superpowers plugin is required for the full pipeline.**
-
-Install in Claude Code:
-
-```
-/plugin install superpowers@claude-plugins-official
-```
-
-Then re-run `./install.sh` here.
-
-### Review tiers
+## Review tiers
 
 | Tier | Who | Scope | When |
 |---|---|---|---|
@@ -322,17 +304,7 @@ Then re-run `./install.sh` here.
 
 Self-review is cheap and always runs. AI-as-judge is targeted. The split exists because a producer evaluating its own subjective quality is the primary failure mode in AI evaluation.
 
-### Superpowers sub-skills
-
-| Step | Requires / adopts |
-|---|---|
-| [2] `planning-from-ticket` | REQUIRED: `superpowers:brainstorming` · ADOPT: `superpowers:writing-plans` rigor |
-| [3] `generating-tasks` | ADOPT: `superpowers:writing-plans` bite-sized-task discipline |
-| [4] `reviewing-plan` | ON DO NOT PROCEED: `receiving-plan-review` (verify-before-fix) |
-| [5] `implementing-tasks` | REQUIRED: `superpowers:test-driven-development` + `testing-pytest` / `testing-vitest` · `superpowers:systematic-debugging` on wrong-reason RED · `superpowers:dispatching-parallel-agents` on multi-failures · `superpowers:verification-before-completion` before marking done · `superpowers:requesting-code-review` mid-task |
-| [6] `reviewing-code` | ON FAIL: `superpowers:receiving-code-review` (verify-before-fix) · ADOPT: `superpowers:requesting-code-review` (SHA convention) |
-
-### Model selection
+## Model selection
 
 In Claude Code, each skill pins its own model — you don't need to switch manually. Other tools (OpenCode, Cursor, Copilot) ignore the `model` field and use their session model.
 
@@ -345,18 +317,3 @@ In Claude Code, each skill pins its own model — you don't need to switch manua
 | `planning-from-ticket` | Opus | Highest-stakes reasoning: codebase exploration + design decisions |
 | `reviewing-plan` | Opus | Subjective judgment before any code is written |
 | `reviewing-code` | Opus | Where self-preference bias gets caught — model quality matters most here |
-
-## Book Skills
-
-Standalone coaching skills in `book-skills/`. Each is grounded in a specific book — use them for architecture review, DDD coaching, design critique, and system design Q&A.
-
-Install manually by symlinking from `book-skills/` into `~/.claude/skills/`.
-
-| Skill | Grounded in |
-|---|---|
-| `clean-architecture` | Robert C. Martin, *Clean Architecture* (2017) |
-| `clean-coding` | Robert C. Martin, *Clean Code* (2008) |
-| `ddd-expert` | Eric Evans, *Domain-Driven Design* (2003) |
-| `design-patterns-expert` | Alexander Shvets, *Dive Into Design Patterns* (2022) |
-| `pragmatic-engineer` | Thomas & Hunt, *The Pragmatic Programmer* (2019) |
-| `system-designing` | Kleppmann & Riccomini, *Designing Data-Intensive Applications* (2nd ed.) |

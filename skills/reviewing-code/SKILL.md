@@ -177,7 +177,9 @@ Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`
 ```
 > **Human Review:** APPROVED — YYYY-MM-DD — reviewing-code
 ```
-Then tell the developer: `Stamped REVIEW-LOG.md. Next: /crafting-commits`
+Then ask: > Ready to proceed? `/crafting-commits` (yes/no)
+
+On yes, invoke `/crafting-commits`.
 
 A ❌ FAIL or ❌ REQUEST CHANGES verdict does not offer the gate — direct the developer to `superpowers:receiving-code-review` first.
 
