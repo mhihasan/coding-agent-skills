@@ -39,18 +39,10 @@ Works with Claude Code, OpenCode, Cursor, and any tool that reads `~/.claude/ski
 ```bash
 git clone git@github.com:mhihasan/coding-agent-skills.git
 cd coding-agent-skills
-./install.sh
+./install.sh --scope=user      # ~/.claude/skills/ — available in all projects
+./install.sh --scope=project   # .claude/skills/  — current project only
+./install.sh --scope=both      # both locations
 ```
-
-The script prompts you to choose a scope:
-
-| Scope | Target | When to use |
-|---|---|---|
-| User (default) | `~/.claude/skills/` | Available in all projects |
-| Project | `.claude/skills/` in current directory | Current project only |
-| Both | Both of the above | |
-
-To skip the prompt, pass `--scope=user`, `--scope=project`, or `--scope=both`.
 
 Safe to re-run: existing symlinks are updated, real directories are never overwritten.
 

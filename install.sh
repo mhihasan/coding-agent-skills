@@ -48,17 +48,13 @@ echo "────────────────────────�
 
 if [ -z "$SCOPE" ]; then
   echo ""
-  echo "Where do you want to install the skills?"
-  echo "  1) User scope   — ~/.claude/skills/  (available in all projects)"
-  echo "  2) Project scope — .claude/skills/   (current directory only)"
-  echo "  3) Both"
+  echo "Usage: ./install.sh --scope=user|project|both"
   echo ""
-  read -r -p "Choice [1/2/3] (default: 1): " choice
-  case "${choice:-1}" in
-    2) SCOPE="project" ;;
-    3) SCOPE="both" ;;
-    *) SCOPE="user" ;;
-  esac
+  echo "  --scope=user     Install to ~/.claude/skills/  (available in all projects)"
+  echo "  --scope=project  Install to .claude/skills/    (current directory only)"
+  echo "  --scope=both     Install to both locations"
+  echo ""
+  exit 1
 fi
 
 # ── INSTALL ───────────────────────────────────────────────────────────────────
