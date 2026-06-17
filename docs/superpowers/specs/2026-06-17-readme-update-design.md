@@ -16,7 +16,7 @@ The current README has accurate content but is organized for someone who already
 
 1. Make the README work for both audiences: new engineer (first impression) and existing user (reference).
 2. Surface design principles early so the flowchart is immediately legible.
-3. Add a plain English walkthrough of the pipeline *before* the Mermaid diagram so the reader has a mental model before they see the flowchart.
+3. Make the Mermaid diagram self-explanatory — clear plain-English node labels, a legend, and visible gate annotations so no prose walkthrough is needed.
 4. Update the diagram to show human review gates as first-class pipeline nodes.
 5. Update the skills reference to document what each skill checks and writes.
 
@@ -34,9 +34,7 @@ The current README has accurate content but is organized for someone who already
 
 ```
 1. Title + tagline + quote          (unchanged)
-2. Agentic Coding Workflow
-   2a. Plain English walkthrough     (NEW — 3 short paragraphs before the diagram)
-   2b. Mermaid flowchart             (updated — human gate nodes added)
+2. Agentic Coding Workflow          (Mermaid diagram — updated with human gate nodes + legend)
 3. Design Principles                (NEW)
 4. Use Cases                        (unchanged, moved before installation)
 5. Installation                     (unchanged)
@@ -49,24 +47,6 @@ The current README has accurate content but is organized for someone who already
    → Recommended model tiers
 10. Book Skills                     (unchanged)
 ```
-
----
-
-## Section: Plain English Pipeline Walkthrough (new, before the diagram)
-
-Add a short prose walkthrough immediately before the Mermaid diagram. It should read like someone explaining the pipeline out loud — what happens at each step, where the gates are, and what the two types of review are. Roughly 8–10 sentences. No bullet lists — flowing paragraphs.
-
-Example draft:
-
-> You start by fetching a Jira ticket and setting up a branch. From there, you plan the work — the AI explores the codebase, surfaces decisions, and writes a structured plan file. Once the plan has tasks attached, a **human review gate** asks you to approve the tasks before any AI judging starts.
->
-> The plan then goes to an AI judge running in a fresh context — no memory of how the plan was written, no self-preference bias. If the judge says PROCEED, another human gate asks you to confirm before implementation starts. If it says DO NOT PROCEED, you work through the findings first.
->
-> Implementation runs task by task via TDD. After each task, a human gate asks you to approve before the next one starts. When all tasks are done, the code goes to a second AI judge — same fresh-context, same independence guarantee. A final human gate sits between the PASS verdict and committing.
->
-> Two types of review run throughout: **self-review** (cheap, mechanical, always on — catches placeholders and format issues) and **AI-as-judge** (targeted, subjective, fresh context — catches design and scope problems). Human gates tie them together.
-
-This is a draft — the implementer should write the final version in their own voice, keeping it to 3 short paragraphs.
 
 ---
 
@@ -91,6 +71,15 @@ Shape: hexagon (`{{...}}` in Mermaid flowchart syntax).
 | `human-gate: per-task stamp (T1…Tn)` | each task iteration inside `implementing-tasks` |
 | `human-gate: reviewing-code stamp` | `reviewing-code` PASS → `crafting-commits` |
 
+### Design principles for the diagram
+
+The diagram should be self-explanatory without any surrounding prose. To achieve this:
+
+1. **Node labels use plain English** — describe what the step does, not just its name. Example: `"fetch ticket, create branch"` not just `"picking-up-task"`.
+2. **Edge labels explain transitions** — `PROCEED`, `DO NOT PROCEED`, `PASS`, `FAIL`, `after each task`, `all tasks done`.
+3. **A legend subgraph** at the bottom explains the four node colours so a first-time reader doesn't have to guess.
+4. **Gate labels are action-oriented** — `"you review & approve"` rather than `"human gate: stamp"`.
+
 ### Full updated Mermaid source
 
 ```mermaid
@@ -100,19 +89,19 @@ flowchart TD
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
-    ST(["picking-up-task\nJira URL / key / local file  →  branch + ticket file"]):::sp
-    PFT["planning-from-ticket\nticket file  →  PLAN-KEY.md"]:::pipe
-    GT["generating-tasks\nPLAN-KEY.md  →  Tasks section appended"]:::pipe
-    HG1{{" human gate\ngenerating-tasks stamp"}}:::gate
-    RP{"reviewing-plan\nAI-as-judge · fresh context · strong model"}:::judge
-    RPR["receiving-plan-review\nverify findings · fix plan"]:::pipe
-    HG2{{" human gate\nreviewing-plan stamp"}}:::gate
-    IT["implementing-tasks\nTDD · auto-selects pytest or vitest\nrequires PROCEED marker · mid-task self-review"]:::pipe
-    HG3{{" human gate\nper-task stamp T1…Tn"}}:::gate
-    RC{"reviewing-code\nAI-as-judge · fresh context · strong model"}:::judge
-    RCR["superpowers:receiving-code-review\nverify findings · fix code"]:::sp
-    HG4{{" human gate\nreviewing-code stamp"}}:::gate
-    CC(["crafting-commits\nconventional commits · human-gated"]):::sp
+    ST(["① fetch ticket\ncreate branch"]):::sp
+    PFT["② explore codebase\nwrite PLAN-KEY.md"]:::pipe
+    GT["③ break plan into\nTDD-ready tasks"]:::pipe
+    HG1{{"✋ you review tasks\nbefore AI judges the plan"}}:::gate
+    RP{"④ AI judges the plan\nfresh context · strong model"}:::judge
+    RPR["verify findings\nfix plan"]:::pipe
+    HG2{{"✋ you review AI verdict\nbefore implementation starts"}}:::gate
+    IT["⑤ implement task by task\nTDD · RED → GREEN → REFACTOR"]:::pipe
+    HG3{{"✋ you review each task\nbefore the next one starts"}}:::gate
+    RC{"⑥ AI reviews the code\nfresh context · strong model"}:::judge
+    RCR["verify findings\nfix code"]:::sp
+    HG4{{"✋ you review AI verdict\nbefore committing"}}:::gate
+    CC(["⑦ rewrite history into\nclean conventional commits"]):::sp
 
     ST --> PFT --> GT --> HG1 --> RP
     RP -->|PROCEED| HG2
@@ -126,6 +115,13 @@ flowchart TD
     RC -->|FAIL| RCR
     RCR --> RC
     HG4 --> CC
+
+    subgraph Legend
+        L1(["superpowers step"]):::sp
+        L2["pipeline step"]:::pipe
+        L3{"AI judge"}:::judge
+        L4{{"✋ human gate"}}:::gate
+    end
 ```
 
 ---
