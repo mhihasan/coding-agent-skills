@@ -1,6 +1,6 @@
 ---
 name: generating-tasks
-description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-ticket) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Does not gather requirements or write implementation code. Pass 'auto' as argument for autonomous mode; default is collaborative."
+description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-ticket) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Pass 'auto' as argument for autonomous mode; default is collaborative."
 license: MIT
 model: inherit
 color: peachpuff
@@ -175,7 +175,7 @@ A well-sized task supports a tight TDD cycle: ~2-4 production files, ~3-8 test s
 
 ## Scope
 
-You are NOT an autonomous agent and you do NOT write implementation code. You produce task specs and stop.
+You do not gather requirements — the plan exists before you are invoked. You do not write implementation code — you produce task specs and stop. You are NOT an autonomous agent. You produce task specs and stop.
 
 ## You Must NOT
 
