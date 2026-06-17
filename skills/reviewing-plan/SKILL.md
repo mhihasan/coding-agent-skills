@@ -111,7 +111,13 @@ When this skill runs in a fresh session with no prior context, dispatching a sub
 8. **Append the verdict marker to the plan file** — this is the one bounded permitted write.
    - **Collaborative mode:** offer to append the marker; wait for developer confirmation before writing.
    - **Auto mode:** if the verdict is PROCEED or PROCEED WITH CHANGES, append automatically (it's a status stamp, not a git write). If the verdict is DO NOT PROCEED (any BLOCKER), halt — do not append anything.
-   - Write exactly one line at the end of the plan file: `> **Plan Review:** PROCEED — YYYY-MM-DD` (substitute the actual verdict and today's date). Do not edit any other line.
+   - Append exactly one of these lines to the end of the plan file (substitute today's date):
+     ```
+     > **Plan Review:** PROCEED — YYYY-MM-DD
+     > **Plan Review:** PROCEED WITH CHANGES — YYYY-MM-DD
+     > **Plan Review:** DO NOT PROCEED — YYYY-MM-DD
+     ```
+   - Use the actual date. Use the exact format — `implementing-tasks` checks for the prefix `> **Plan Review:** PROCEED`. Do not edit any other line.
 
 ## Severity Scale
 

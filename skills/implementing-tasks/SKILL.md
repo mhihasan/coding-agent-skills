@@ -125,7 +125,8 @@ When you first receive a task to implement:
 
 0. **Workspace isolation** — In auto mode, always invoke `superpowers:using-git-worktrees` before writing the first test — agents run unattended and isolation is non-negotiable. In collaborative mode, `start-task` will have already set up the branch or worktree; skip this step unless the developer explicitly asks for a worktree.
 1. **Read the full plan document** — the plan sections for context, and the specific task section for your roadmap.
-1a. **Confirm the plan cleared `reviewing-plan`.** Look for a verdict marker in the plan file — a line matching `> **Plan Review:** PROCEED`. If none exists:
+1a. **Confirm the plan cleared `reviewing-plan`.** Check the plan file for a line beginning with `> **Plan Review:** PROCEED`.
+   This matches both `PROCEED` and `PROCEED WITH CHANGES` verdicts. DO NOT start if the only verdict line is `> **Plan Review:** DO NOT PROCEED`. If no verdict marker exists:
    - **Collaborative mode:** ask the developer to confirm a PROCEED verdict exists, or ask them to run `reviewing-plan` first. Do not start implementation on an unjudged plan.
    - **Auto mode:** refuse to start — there is no human to confirm, and an unjudged plan is a BLOCKER. Report that `reviewing-plan` must run first and emit its verdict marker.
 2. **Read CLAUDE.md** (if it exists) and **scan the relevant source code and test files** mentioned in the task spec to understand current state, patterns, and conventions.
