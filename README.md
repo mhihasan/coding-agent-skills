@@ -299,7 +299,7 @@ Review the plan in chat, confirm, and the script runs. Reminds you to run `super
 
 ---
 
-### Collaborative vs auto mode
+## Collaborative vs auto mode
 
 Every pipeline skill accepts an optional `auto` argument. **Collaborative is the default.**
 
