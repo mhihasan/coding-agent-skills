@@ -14,7 +14,7 @@ Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch —
 ## Where You Sit in the Pipeline
 
 ```
-[1] start-task          ← YOU ARE HERE
+[1] picking-up-task     ← YOU ARE HERE
 [2] planning-from-ticket
 [3] generating-tasks
 [4] reviewing-plan
@@ -121,7 +121,7 @@ git checkout -b feat/PROJ-42/add-user-auth
 When `--worktree` is passed:
 
 ```
-/start-task PROJ-42 --worktree
+/picking-up-task PROJ-42 --worktree
 ```
 
 After confirming the branch name, invoke `superpowers:using-git-worktrees` instead of `git checkout -b`. Pass the constructed branch name to it. All worktree logic is owned by that skill.
