@@ -123,7 +123,9 @@ After appending, open the Review Gate.
 > **Human Review:** APPROVED — YYYY-MM-DD — generating-tasks
 ```
 
-Then tell the developer: `Tasks appended. Next: /reviewing-plan <plan-file>`
+Then ask: > Ready to proceed? `/reviewing-plan <plan-file>` (yes/no)
+
+On yes, invoke `/reviewing-plan <plan-file>`.
 
 **Auto mode:** Write the stamp automatically with `AUTO`:
 
@@ -224,4 +226,4 @@ You do not gather requirements — the plan exists before you are invoked. You d
 
 - Read CLAUDE.md (if present) and scan relevant source/test files before drafting the test plan.
 - Your output is a task spec, not code. Stay in your lane.
-- When done, append the tasks and tell the developer the next step is **reviewing-plan** (then **implementing-tasks** to implement): e.g. *"Tasks appended to PLAN-<KEY>.md. Next: run reviewing-plan on it before coding."*
+- When done, append the tasks and ask the developer: > Ready to proceed? `/reviewing-plan <plan-file>` (yes/no)

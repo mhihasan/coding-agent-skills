@@ -208,7 +208,9 @@ Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`
 ```
 Then continue to the next task.
 
-**After the final task:** tell the developer: `All tasks complete. Next: /reviewing-code`
+**After the final task:** ask: > All tasks complete. Ready to proceed? `/reviewing-code branch <plan-file>` (yes/no)
+
+On yes, invoke `/reviewing-code branch <plan-file>`.
 
 ## Alternative Execution Engine
 
@@ -254,4 +256,4 @@ This skill never runs `git commit`, `git push`, `git merge`, or opens a PR on it
 - Read CLAUDE.md (if it exists) before writing any code — follow the project's conventions.
 - Invoke the matching testing skill (testing-pytest or testing-vitest) before writing the first test.
 - Your output is working code with passing tests, not plans or reviews.
-- When all tests pass, tell the developer: "Next: `/reviewing-code branch <plan-file>`."
+- When all tests pass, ask: > Ready to proceed? `/reviewing-code branch <plan-file>` (yes/no)

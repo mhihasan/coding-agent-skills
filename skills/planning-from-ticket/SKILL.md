@@ -114,7 +114,9 @@ After writing the plan file, open the Review Gate.
 > **Human Review:** APPROVED — YYYY-MM-DD — planning-from-ticket
 ```
 
-Then tell the developer: `Plan written to <path>. Next: /generating-tasks <path>`
+Then ask: > Ready to proceed? `/generating-tasks <path>` (yes/no)
+
+On yes, invoke `/generating-tasks <path>`.
 
 **Auto mode:** Write the stamp automatically with `AUTO`:
 
