@@ -87,50 +87,27 @@ Safe to re-run: existing symlinks are updated, real directories are never overwr
 
 ## Quickstart
 
-**Option A: review any branch right now**
+**Option A: full pipeline from a Jira ticket**
 
-```
-/reviewing-code branch
+```bash
+/picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
+
+# Each skill tells you what to run next. The full sequence:
+# /planning-from-ticket → /generating-tasks → /reviewing-plan
+# → /implementing-tasks → /reviewing-code → /crafting-commits
 ```
 
-Point it at your current branch. It dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
+Each skill is independently usable — enter at any point if the upstream artifact already exists.
 
 ---
 
-**Option B: full pipeline from a Jira ticket**
+**Option B: review any branch right now**
 
-```bash
-# 1. Install the superpowers plugin (required dependency)
-/plugin install superpowers@claude-plugins-official
-
-# 2. Start the task (fetch ticket + set up branch)
-/picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
-
-# 3. Plan it
-/planning-from-ticket local-dev/tickets/PROJ-123/PROJ-123.md
-
-# 4. Generate TDD tasks
-/generating-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
-
-# 5. Judge the plan (AI-as-judge, blocks implementation if findings are blockers)
-/reviewing-plan local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
-
-# 6. Implement (refuses to start without a PROCEED verdict marker)
-/implementing-tasks local-dev/tickets/PROJ-123/PLAN-PROJ-123.md auto
-
-# 7. Review the code
-/reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md
-
-# 8. Address findings (if any)
-# superpowers:receiving-code-review  — verify each finding, push back on wrong ones, fix genuine ones
-# then re-run /reviewing-code to confirm all findings resolved
-
-# 9. Clean up commits
-/crafting-commits
-# presents plan in chat → confirm → executes
+```
+/reviewing-code
 ```
 
-Each step is independently usable. Enter at any point if the upstream artifact already exists.
+Reviews your staged diff by default, or pass `branch`, a PR number, or a diff file. Dispatches parallel AI judges, filters the diff by domain, and produces a triage-first report. No plan file needed.
 
 ## Skills Reference
 
@@ -262,13 +239,14 @@ Triage-first code review. Dispatches parallel AI judges filtered by domain (Type
 
 | | |
 |---|---|
-| **Input** | Branch name, PR number, staged diff, or diff file; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
+| **Input** | Branch name, PR number, staged diff, or diff file — defaults to staged diff if no target given; optionally a plan/spec file for pipeline context (ticket file read automatically if found beside the plan) |
 | **Output** | `CODE-REVIEW-{identifier}.md` with severity-tiered findings (🔴 Critical → ⚠️ Manual) |
 | **Auto mode** | Supported, skips triage confirmation and proceeds directly to review; on FAIL automatically invokes `superpowers:receiving-code-review`, fixes findings, and re-runs review |
 | **Verdict** | Pipeline: `PASS` / `PASS WITH FINDINGS` / `FAIL` · General: `APPROVE` / `APPROVE WITH COMMENTS` / `REQUEST CHANGES` |
 | **Writes** | `reviewing-code` stamp in `REVIEW-LOG.md` after you approve |
 
 ```bash
+/reviewing-code                                                    # review staged diff (default)
 /reviewing-code branch                                             # review current branch against main
 /reviewing-code PR-456                                             # review a specific PR
 /reviewing-code branch local-dev/tickets/PROJ-123/PLAN-PROJ-123.md          # pipeline mode with plan context
