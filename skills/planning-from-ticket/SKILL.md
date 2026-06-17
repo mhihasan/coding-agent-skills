@@ -1,6 +1,12 @@
 ---
 name: planning-from-ticket
-description: "Use when the user points to a local Jira ticket or spec markdown file and wants an implementation plan written to a PLAN file beside it. Triggers on phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an implementation plan for this spec'. Assumes the ticket is already on disk — does not fetch from Jira. Pass 'auto' as argument for autonomous mode; default is collaborative."
+description: >
+  Use when the user points to a local Jira ticket or spec markdown file and
+  wants an implementation plan written to a PLAN file beside it. Triggers on
+  phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an
+  implementation plan for this spec'.
+model: inherit
+color: lightblue
 license: MIT
 ---
 
@@ -60,7 +66,7 @@ Resolve them with AskUserQuestion (this is the brainstorming dialogue). Lead eac
 
 ### 4. Self-review the draft — before the developer sees it
 
-Before presenting anything, review your own draft against these criteria and fix any failures:
+**STOP before presenting to the developer.** Check every item — fix failures before showing the plan:
 
 | Check | Pass condition |
 |---|---|
