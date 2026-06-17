@@ -17,7 +17,7 @@ flowchart TD
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef gate fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
 
-    ST(["[1] start-task\nJira URL/key or local file → branch · ✔ self-review"]):::sp
+    ST(["[1] start-task\nJira URL/key or local file → branch"]):::sp
     PFT["[2] planning-from-ticket\nticket → PLAN-KEY.md · ✔ self-review"]:::pipe
     GT["[3] generating-tasks\nPLAN + Tasks section · ✔ self-review"]:::pipe
     RP["[4] reviewing-plan\nAI-as-judge · fresh-context · strong model\nemits verdict marker"]:::judge
