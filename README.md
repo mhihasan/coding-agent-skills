@@ -131,7 +131,7 @@ Every pipeline skill accepts an optional `auto` argument. **Collaborative is the
 | Tier | Who | Scope | When |
 |---|---|---|---|
 | **Self-review** | The producing skill checks its own output | Objective, mechanical checks only (placeholders, file coverage, format): verifiable yes/no | Every artifact boundary; runs in both modes |
-| **AI-as-judge** | Independent fresh-context subagent on a strong model | Subjective quality calls (scope, over-engineering, breaking changes, design) with BLOCKER/SHOULD-FIX/NIT severity gate | `reviewing-plan` (before code) · `reviewing-code` (after code) |
+| **AI-as-judge** | Independent fresh-context subagent on a strong model | Subjective quality calls (scope, over-engineering, breaking changes, design) with BLOCKER/SHOULD-FIX/NIT severity gate | [`reviewing-plan`](skills/reviewing-plan/SKILL.md) (before code) · [`reviewing-code`](skills/reviewing-code/SKILL.md) (after code) |
 
 Self-review is cheap and always runs. AI-as-judge is targeted. The split exists because a producer evaluating its own subjective quality is the primary failure mode in AI evaluation.
 
@@ -141,10 +141,10 @@ In Claude Code, each skill pins its own model — you don't need to switch manua
 
 | Skill | Model | Why |
 |---|---|---|
-| `picking-up-task` | Haiku | Mechanical: fetch ticket, create file |
-| `generating-tasks` | Sonnet | Task decomposition, no deep design judgment needed |
-| `implementing-tasks` | Sonnet | TDD cycle needs solid reasoning, not Opus-level |
-| `crafting-commits` | Haiku | Mechanical: read history, format commits |
-| `planning-from-ticket` | Opus | Highest-stakes reasoning: codebase exploration + design decisions |
-| `reviewing-plan` | Opus | Subjective judgment before any code is written |
-| `reviewing-code` | Opus | Where self-preference bias gets caught — model quality matters most here |
+| [`picking-up-task`](skills/picking-up-task/SKILL.md) | Haiku | Mechanical: fetch ticket, create file |
+| [`generating-tasks`](skills/generating-tasks/SKILL.md) | Sonnet | Task decomposition, no deep design judgment needed |
+| [`implementing-tasks`](skills/implementing-tasks/SKILL.md) | Sonnet | TDD cycle needs solid reasoning, not Opus-level |
+| [`crafting-commits`](skills/crafting-commits/SKILL.md) | Haiku | Mechanical: read history, format commits |
+| [`planning-from-ticket`](skills/planning-from-ticket/SKILL.md) | Opus | Highest-stakes reasoning: codebase exploration + design decisions |
+| [`reviewing-plan`](skills/reviewing-plan/SKILL.md) | Opus | Subjective judgment before any code is written |
+| [`reviewing-code`](skills/reviewing-code/SKILL.md) | Opus | Where self-preference bias gets caught — model quality matters most here |
