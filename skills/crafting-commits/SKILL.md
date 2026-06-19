@@ -227,7 +227,11 @@ After successful execution, say:
 Skip the assessment table. Go straight to designing the commit plan from the diff.
 
 **All existing commits are clean:**
-Still present the plan in chat. Show the assessment table with all keep verdicts, confirm the sequence looks right, and offer to either proceed as-is or re-evaluate if the user wants different groupings.
+Show the assessment table with all keep verdicts. Since no rewrite is needed, skip Steps 5–6 (no execution script to run). Say:
+
+> "All commits are already clean — no rewrite needed. Run `superpowers:finishing-a-development-branch` when you're ready to merge, open a PR, or discard the branch. If opening a PR, always create it as a draft (`gh pr create --draft`)."
+
+Do not write a `REVIEW-LOG.md` stamp — there is nothing to approve.
 
 **Merge commits in the range:**
 Note them in the assessment. Do not include merge commits in the rewritten history — the clean sequence should be linear.
