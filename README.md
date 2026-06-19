@@ -56,7 +56,9 @@ flowchart TD
     classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
     classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
-    ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
+    SS(["⓪ start here — ticket, idea, or resume\n/sdlc-start"]):::sp
+    ST["① pick up ticket\nset up a branch\n/picking-up-task"]:::pipe
+    BR["① brainstorm idea\nwrite a spec\nsuperpowers:brainstorming"]:::pipe
     PFT["② read the codebase\nwrite an implementation plan\n/planning-from-spec"]:::pipe
     HG0{{"✋ you approve the plan\nor ask to revise it"}}:::gate
     GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
@@ -70,7 +72,11 @@ flowchart TD
     HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
     CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
 
-    ST --> PFT --> HG0 --> GT --> HG1 --> RP
+    SS -->|ticket / URL / key| ST
+    SS -->|free-form idea| BR
+    ST --> PFT
+    BR --> PFT
+    PFT --> HG0 --> GT --> HG1 --> RP
     RP -->|PROCEED| HG2
     RP -->|DO NOT PROCEED| RPR
     RPR --> RP
