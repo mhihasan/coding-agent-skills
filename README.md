@@ -14,9 +14,6 @@ One command. Works on macOS, Linux, WSL, Git Bash.
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
 ```
 
-~10 seconds. Installs for Claude Code and Copilot. Safe to re-run.
-
-Install broke? Open your agent and say: "Read CLAUDE.md and install agentic-sdlc for me."
 
 ## Quickstart
 
