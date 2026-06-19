@@ -6,13 +6,17 @@ A gate-enforced SDLC pipeline for AI coding agents. Ticket in, reviewed PR out â
 
 Works with Claude Code, OpenCode, Cursor, and GitHub Copilot.
 
-## Installation
+## Install
+
+One command. Works on macOS, Linux, WSL, Git Bash.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
 ```
 
-Installs for Claude Code and Copilot at user scope. Re-run to update.
+~10 seconds. Installs for Claude Code and Copilot. Safe to re-run.
+
+Install broke? Open your agent and say: "Read CLAUDE.md and install agentic-sdlc for me."
 
 ## Quickstart
 
