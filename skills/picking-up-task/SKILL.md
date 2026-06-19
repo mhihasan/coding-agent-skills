@@ -10,13 +10,13 @@ license: MIT
 
 Bootstrap a new task: fetch the ticket (if remote) and set up a clean branch — so you can jump straight into planning.
 
-**Next step:** once the branch is ready, run `planning-from-ticket` on the ticket file.
+**Next step:** once the branch is ready, run `planning-from-spec` on the ticket file.
 
 ## Where You Sit in the Pipeline
 
 ```
 [1] picking-up-task     ← YOU ARE HERE
-[2] planning-from-ticket
+[2] planning-from-spec
 [3] generating-tasks
 [4] reviewing-plan
 [5] implementing-tasks
@@ -36,7 +36,7 @@ Accepts one required argument. Detect the source type:
 | Anything else | `"add password reset"` | **STOP — reject immediately** |
 
 **When input is unrecognized, say exactly this and do nothing else:**
-> "I need a Jira ticket URL, Jira key (e.g. `PROJ-42`), or a local ticket file path to start a task. For work without a ticket, use `/planning-from-ticket` directly with a spec file."
+> "I need a Jira ticket URL, Jira key (e.g. `PROJ-42`), or a local ticket file path to start a task. For work without a ticket, use `/planning-from-spec` directly with a spec file."
 
 **Do not:**
 - Accept ad-hoc descriptions, even under time pressure
@@ -55,7 +55,7 @@ Once `fetching-tickets` completes, the ticket is at `$ARTIFACTS_ROOT/PROJ-42/PRO
 
 ## Workspace Setup
 
-After the ticket is on disk (fetched or read from local file), set up the branch. This is **required** — do not skip it, do not hand off to `planning-from-ticket` before completing it.
+After the ticket is on disk (fetched or read from local file), set up the branch. This is **required** — do not skip it, do not hand off to `planning-from-spec` before completing it.
 
 ### 0. Resolve artifacts root
 
@@ -193,21 +193,21 @@ Type `approve` to stamp it and proceed, or describe what needs fixing.
    > **Human Review:** APPROVED — YYYY-MM-DD — picking-up-task
    ```
 2. Ask:
-   > Ready to proceed? `/planning-from-ticket $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` (yes/no)
+   > Ready to proceed? `/planning-from-spec $ARTIFACTS_ROOT/PROJ-42/PROJ-42.md` (yes/no)
 
-   On yes, invoke `/planning-from-ticket <ticket-file>`.
+   On yes, invoke `/planning-from-spec <ticket-file>`.
 
 **Auto mode:** Write the stamp automatically with `AUTO`:
 ```
 > **Human Review:** AUTO — YYYY-MM-DD — picking-up-task
 ```
-Then invoke `/planning-from-ticket <ticket-file>` automatically.
+Then invoke `/planning-from-spec <ticket-file>` automatically.
 
 No push commands. No extra guidance beyond the next-step prompt.
 
 ## You Must NOT
 
-- **Skip branch creation.** Fetching the ticket and handing off to `planning-from-ticket` without creating a branch is wrong. Branch creation is part of this skill's job.
+- **Skip branch creation.** Fetching the ticket and handing off to `planning-from-spec` without creating a branch is wrong. Branch creation is part of this skill's job.
 - **Accept ad-hoc descriptions.** Not even under time pressure. Not even if the developer says "just figure it out." Reject and redirect.
 - **Create a Jira ticket.** That is not in scope. The developer must provide an existing ticket or file.
 - **Call Jira APIs directly.** Delegate to `fetching-tickets`. No MCP Atlassian calls, no curl to Jira REST.

@@ -1,6 +1,6 @@
 ---
 name: generating-tasks
-description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-ticket) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Pass 'auto' as argument for autonomous mode; default is collaborative."
+description: "Use when a feature/implementation plan exists (e.g. a PLAN-<KEY>.md produced by planning-from-spec) and the user wants TDD-ready task specs created from it before implementation. Triggers on 'generate tasks from this plan', 'turn the plan into tasks', 'break the plan into TDD tasks'. Pass 'auto' as argument for autonomous mode; default is collaborative."
 license: MIT
 model: claude-sonnet-4-6  # Claude Code only; other tools use their session model
 color: peachpuff
@@ -13,7 +13,7 @@ You are a collaborative task-specification partner. Your job is to work **with t
 ## Where You Sit
 
 ```
-planning-from-ticket ──► PLAN-<KEY>.md (beside the ticket)
+planning-from-spec ──► PLAN-<KEY>.md (beside the ticket)
         │
    [YOU ARE HERE] ──► append a "# Tasks" section INTO the same PLAN file
         │
@@ -21,7 +21,7 @@ planning-from-ticket ──► PLAN-<KEY>.md (beside the ticket)
    reviewing-plan ──► implementing-tasks
 ```
 
-- **Input:** an existing plan file — typically a `PLAN-<KEY>.md` from `planning-from-ticket`, or a direct brief for a simple, well-understood task.
+- **Input:** an existing plan file — typically a `PLAN-<KEY>.md` from `planning-from-spec`, or a direct brief for a simple, well-understood task.
 - **Output:** task specs **appended into the same plan file**, so the downstream reviewer and implementer read one self-contained PLAN+TASKS document.
 - **What runs after you:** `reviewing-plan` judges the PLAN+TASKS before any code; then `implementing-tasks` implements via TDD. Point the developer to `reviewing-plan` next — never to implementation directly.
 
@@ -59,15 +59,15 @@ A natural progression — not a rigid pipeline. Let the conversation go where it
 
 ### 0. Preflight — check upstream gate
 
-Before reading the plan, locate `REVIEW-LOG.md` in the same directory as the plan file and check for a `planning-from-ticket` stamp:
+Before reading the plan, locate `REVIEW-LOG.md` in the same directory as the plan file and check for a `planning-from-spec` stamp:
 
 ```bash
-grep "Human Review:.*planning-from-ticket" <plan-dir>/REVIEW-LOG.md
+grep "Human Review:.*planning-from-spec" <plan-dir>/REVIEW-LOG.md
 ```
 
 - **Line absent (or file missing):** halt immediately with:
-  > "This step requires a human review stamp from `planning-from-ticket`. Run `/planning-from-ticket` first and approve the plan before generating tasks."
-- **Line present with `AUTO`:** note — "Note: upstream `planning-from-ticket` was AI-conducted in auto mode" — then continue.
+  > "This step requires a human review stamp from `planning-from-spec`. Run `/planning-from-spec` first and approve the plan before generating tasks."
+- **Line present with `AUTO`:** note — "Note: upstream `planning-from-spec` was AI-conducted in auto mode" — then continue.
 - **Line present with `APPROVED`:** proceed normally.
 
 ### 1. Understand the plan

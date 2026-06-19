@@ -10,7 +10,7 @@ license: MIT
 
 Pull a Jira ticket and write it to a local markdown file that faithfully mirrors the ticket's section order and includes all assets downloaded locally.
 
-**Next step:** once the ticket is on disk, the developer typically runs `planning-from-ticket` to turn it into an implementation plan.
+**Next step:** once the ticket is on disk, the developer typically runs `planning-from-spec` to turn it into an implementation plan.
 
 ## Prerequisites
 
