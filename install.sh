@@ -88,6 +88,11 @@ link_commands() {
   local target_dir="$1"
   local linked=0 skipped=0
 
+  if [ ! -d "$COMMANDS_SRC" ]; then
+    echo "  (no commands/ source directory — skipping)"
+    return 0
+  fi
+
   mkdir -p "$target_dir"
 
   for cmd in "$COMMANDS_SRC"/*.md; do
@@ -139,8 +144,8 @@ if [ -z "$SCOPE" ] || [ -z "$TOOL" ]; then
   echo "  ./install.sh --scope=user    --tool=claude|copilot|all"
   echo "  ./install.sh --scope=project --tool=claude|copilot|all  /path/to/your-project"
   echo ""
-  echo "  --tool=claude    Claude Code, OpenCode, Cursor  (~/.claude/skills/ or .claude/skills/)"
-  echo "  --tool=copilot   GitHub Copilot                 (~/.copilot/skills/ or .github/skills/)"
+  echo "  --tool=claude    Claude Code, OpenCode, Cursor  (~/.claude/skills/ + commands/ or .claude/skills/ + commands/)"
+  echo "  --tool=copilot   GitHub Copilot                 (~/.copilot/skills/ + commands/ or .github/skills/ + commands/)"
   echo "  --tool=all       Both tools"
   echo ""
   echo "  --scope=user     Install globally, available in all projects"
