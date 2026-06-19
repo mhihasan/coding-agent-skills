@@ -14,6 +14,8 @@ One command. Works on macOS, Linux, WSL, Git Bash.
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
 ```
 
+Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
+
 
 ## Quickstart
 
