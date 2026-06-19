@@ -3,7 +3,10 @@ set -euo pipefail
 
 # ── MODE DETECTION ────────────────────────────────────────────────────────────
 # BASH_SOURCE is unset when piped from curl — use that to detect remote mode.
-here="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd)" || here=""
+here=""
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+  here="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)" || here=""
+fi
 IS_LOCAL=false
 [ -n "$here" ] && [ -d "$here/skills" ] && IS_LOCAL=true
 
@@ -27,7 +30,11 @@ if [ "$IS_LOCAL" = false ]; then
 
   if [ -d "$CLONE_DIR/.git" ]; then
     echo "Updating agentic-sdlc in $CLONE_DIR ..."
-    git -C "$CLONE_DIR" pull --ff-only
+    if ! git -C "$CLONE_DIR" pull --ff-only; then
+      echo "agentic-sdlc: update failed — local clone may have diverged." >&2
+      echo "  Fix: rm -rf $CLONE_DIR and retry." >&2
+      exit 1
+    fi
   else
     echo "Cloning agentic-sdlc to $CLONE_DIR ..."
     git clone https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR"
