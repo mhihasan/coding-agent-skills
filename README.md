@@ -6,41 +6,16 @@ A gate-enforced SDLC pipeline for AI coding agents. Ticket in, reviewed PR out �
 
 Works with Claude Code, OpenCode, Cursor, and GitHub Copilot.
 
-## Installation
+## Install
 
-**One-liner (recommended):**
+One command. Works on macOS, Linux, WSL, Git Bash.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
 ```
 
-Installs for all tools (Claude Code, Copilot) at user scope. Skills land in `~/.claude/skills/` and `~/.copilot/skills/`. Re-run the same command to update.
+Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
-**Options:**
-
-```bash
-# Claude only
-curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash -s -- --tool=claude
-
-# Copilot only
-curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash -s -- --tool=copilot
-
-# Project-scoped
-curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash -s -- --scope=project --tool=claude /path/to/your-project
-```
-
-**Local clone (if you prefer):**
-
-```bash
-git clone git@github.com:mhihasan/agentic-sdlc.git
-cd agentic-sdlc
-
-./install.sh --scope=user --tool=claude     # → ~/.claude/skills/   (Claude Code, OpenCode, Cursor)
-./install.sh --scope=user --tool=copilot    # → ~/.copilot/skills/  (GitHub Copilot)
-./install.sh --scope=user --tool=all        # → both
-```
-
-Safe to re-run: existing symlinks are updated, real directories are never overwritten.
 
 ## Quickstart
 
