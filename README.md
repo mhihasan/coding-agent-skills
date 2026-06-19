@@ -82,10 +82,6 @@ cd agentic-sdlc
 
 Safe to re-run: existing symlinks are updated, real directories are never overwritten.
 
-## Pair with
-
-**[swe-skills](https://github.com/mhihasan/swe-skills)** — software craft skills grounded in books (DDD, clean architecture, design patterns, pragmatic engineering, system design). Complement this pipeline at implementation time.
-
 ## Quickstart
 
 **Option A: full pipeline from a Jira ticket**
