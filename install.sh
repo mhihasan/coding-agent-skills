@@ -41,7 +41,7 @@ if [ "$IS_LOCAL" = false ]; then
     fi
   else
     echo "Cloning agentic-sdlc to $CLONE_DIR ..."
-    git clone https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR"
+    git clone https://github.com/mhihasan/agentic-sdlc "$CLONE_DIR" || { rm -rf "$CLONE_DIR"; exit 1; }
   fi
 
   # Apply default args if none given
