@@ -53,7 +53,7 @@ Safe to re-run: existing symlinks are updated, real directories are never overwr
 Each skill tells you what to run next. Full sequence:
 
 ```
-/planning-from-ticket → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
+/planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
 ```
 
 Enter at any step if the upstream artifact already exists.
@@ -78,7 +78,7 @@ flowchart TD
     classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
 
     ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
-    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-ticket"]:::pipe
+    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-spec"]:::pipe
     HG0{{"✋ you approve the plan\nor ask to revise it"}}:::gate
     GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
     HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
@@ -108,7 +108,7 @@ flowchart TD
 | Skill | What it does |
 | --- | --- |
 | [`/picking-up-task`](skills/picking-up-task/SKILL.md) | Fetch a Jira ticket, create a local file, set up a branch |
-| [`/planning-from-ticket`](skills/planning-from-ticket/SKILL.md) | Read the codebase, write an implementation plan |
+| [`/planning-from-spec`](skills/planning-from-spec/SKILL.md) | Read the codebase, write an implementation plan |
 | [`/generating-tasks`](skills/generating-tasks/SKILL.md) | Break the plan into small testable tasks |
 | [`/reviewing-plan`](skills/reviewing-plan/SKILL.md) | AI judge reviews the plan before any code is written |
 | [`/receiving-plan-review`](skills/receiving-plan-review/SKILL.md) | Challenge or accept each finding, update the plan |

@@ -1,16 +1,16 @@
 ---
-name: planning-from-ticket
+name: planning-from-spec
 description: >
-  Use when the user points to a local Jira ticket or spec markdown file and
-  wants an implementation plan written to a PLAN file beside it. Triggers on
-  phrases like 'read this ticket and make a plan', 'plan PROJ-1234', 'write an
-  implementation plan for this spec'.
+  Use when the user has a spec, ticket, or requirement doc (local file or
+  pasted text) and wants an implementation plan written to a PLAN file.
+  Triggers on phrases like 'make a plan for this', 'plan PROJ-1234', 'write
+  an implementation plan', 'turn this spec into a plan'.
 model: claude-opus-4-8  # Claude Code only; other tools use their session model
 color: lightblue
 license: MIT
 ---
 
-# Planning From Ticket
+# Planning From Spec
 
 Turn a **local ticket or spec file** into a reviewed implementation plan written **beside it** as `PLAN-<KEY>.md`.
 
@@ -82,7 +82,7 @@ Resolve them with AskUserQuestion (this is the brainstorming dialogue). Lead eac
 **STOP before presenting to the developer.** Check every item — fix failures before showing the plan:
 
 | Check | Pass condition |
-|---|---|
+| --- | --- |
 | No placeholders | Zero "TBD", "TODO", "similar to above", or "as needed" in the plan body |
 | Decisions are complete | Every open question from step 3 has a recorded answer with rationale |
 | Scope is tight | Nothing in the change list goes beyond what the ticket explicitly asks for |
@@ -111,7 +111,7 @@ After writing the plan file, open the Review Gate.
 **Collaborative mode (default):** The plan was already presented and approved in step 5 — that approval is the gate. Write (or upsert) this line in `<ticket-dir>/REVIEW-LOG.md`:
 
 ```
-> **Human Review:** APPROVED — YYYY-MM-DD — planning-from-ticket
+> **Human Review:** APPROVED — YYYY-MM-DD — planning-from-spec
 ```
 
 Then ask: > Ready to proceed? `/generating-tasks <path>` (yes/no)
@@ -121,7 +121,7 @@ On yes, invoke `/generating-tasks <path>`.
 **Auto mode:** Write the stamp automatically with `AUTO`:
 
 ```
-> **Human Review:** AUTO — YYYY-MM-DD — planning-from-ticket
+> **Human Review:** AUTO — YYYY-MM-DD — planning-from-spec
 ```
 
 ## Plan File Structure
@@ -160,7 +160,7 @@ Check the arguments for `auto`; **collaborative is the default.**
 ## Common Mistakes
 
 | Mistake | Reality / Fix |
-|---|---|
+| --- | --- |
 | Writing the file before review | "Write a plan" = reviewed plan. The chat review gate is mandatory; the file is the final step. |
 | Treating "write to a file" as license to skip approval | The instruction names the *output*, not permission to skip the *process*. |
 | Ignoring referenced images | ACs frequently live in images. Read every one. |
