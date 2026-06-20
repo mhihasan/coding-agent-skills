@@ -33,6 +33,8 @@ Removes conversational pauses. Routing, delegation, and active-state writes happ
 - Human gate in `planning-from-spec` (plan review requires your approval)
 - Resume prompt when multiple active tasks exist (you must pick which)
 
+**Mode propagation:** The mode flag is passed to every downstream skill — `picking-up-task`, `brainstorming`, `planning-from-spec`, `generating-tasks`. No downstream skill defaults independently. One flag at entry controls the whole pipeline.
+
 ## Input detection rules (applied in order)
 
 | Priority | Matches | Example | Routes to |
