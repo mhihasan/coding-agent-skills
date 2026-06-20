@@ -50,7 +50,7 @@ Run the **ALWAYS** dimensions on every plan. Run a **SIGNAL-GATED** lens only wh
 ### ALWAYS (every plan)
 
 | # | Dimension | What you're looking for |
-|---|---|---|
+| --- | --- | --- |
 | 1 | **Scope fidelity** | Nothing the ticket didn't ask for (creep); nothing the ticket asked for that's missing (gap). Every AC — including those in ticket images — maps to a task. |
 | 2 | **Over-engineering / right-sizing** | Abstractions/patterns/registries introduced before needed. Complexity proportional to the problem. |
 | 3 | **AI footprints** | Invented requirements; plausible but **non-existent** file paths/functions/APIs; generic boilerplate not grounded in this repo; hedging filler. |
@@ -62,7 +62,7 @@ Run the **ALWAYS** dimensions on every plan. Run a **SIGNAL-GATED** lens only wh
 ### JUDGMENT (apply briefly, every plan)
 
 | # | Dimension | What you're looking for |
-|---|---|---|
+| --- | --- | --- |
 | 4 | **Codebase grounding** | Files/components/patterns the plan names **actually exist** and the plan follows existing conventions. **VERIFY by reading — do not guess.** Account for work that's already partly done. |
 | 7 | **Risk honesty** | Genuine open questions surfaced vs papered over; risky/irreversible steps (migrations, deletes, external calls) called out. |
 | 8 | **Decision justification** | Choices justified against the codebase ("use X because the repo already does Y"), not merely asserted. |
@@ -70,7 +70,7 @@ Run the **ALWAYS** dimensions on every plan. Run a **SIGNAL-GATED** lens only wh
 ### SIGNAL-GATED expert lenses (invoke ONLY on signal)
 
 | Lens | Invoke when the signal fires |
-|---|---|
+| --- | --- |
 | `Skill(ddd-expert)` | CLAUDE.md says the project uses DDD, **or** the plan introduces domain/aggregate/bounded-context concepts. |
 | `Skill(clean-architecture)` | Plan introduces or crosses layer/dependency boundaries (ports/adapters, service layers). |
 | `Skill(design-patterns-expert)` | Plan introduces a named pattern or a new abstraction (registry, factory, strategy…). Use it to judge whether the pattern is warranted. |
@@ -145,6 +145,9 @@ Wait for `approve`. On approval, write (or upsert) in `<plan-dir>/REVIEW-LOG.md`
 ```
 > **Human Review:** APPROVED — YYYY-MM-DD — reviewing-plan
 ```
+
+Then update `.agentic-sdlc/active/<KEY>.md` — read the file, set `step: implementing-tasks`, write back. If the file does not exist, skip silently.
+
 Then ask: > Ready to proceed? `/implementing-tasks <plan-file>` (yes/no)
 
 On yes, invoke `/implementing-tasks <plan-file>`.
@@ -217,7 +220,7 @@ Check the arguments for `auto`; **collaborative is the default.**
 ## Common Mistakes
 
 | Mistake | Reality / Fix |
-|---|---|
+| --- | --- |
 | Flat narrative, no severity | The developer can't tell stop-the-line from nitpick. Every finding gets a tier; blockers gate the verdict. |
 | Guessing file/hook names | "Plausible" ≠ "exists." Read the file. Hallucinated anchors are a BLOCKER, not a maybe. |
 | Noting a breaking change without blast radius | Trace the consumers (in a monorepo, use the CLAUDE.md consumer map). Silent breaking change = BLOCKER. |

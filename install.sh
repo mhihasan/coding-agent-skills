@@ -56,6 +56,7 @@ fi
 # ── LOCAL MODE ────────────────────────────────────────────────────────────────
 REPO_DIR="$here"
 SKILLS_SRC="$REPO_DIR/skills"
+COMMANDS_SRC="$REPO_DIR/commands"
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
 
@@ -75,6 +76,35 @@ link_skills() {
       skipped=$((skipped + 1))
     else
       ln -sfn "$skill" "$dest"
+      echo "  LINKED: $dest"
+      linked=$((linked + 1))
+    fi
+  done
+
+  echo "  → $linked linked, $skipped skipped"
+}
+
+link_commands() {
+  local target_dir="$1"
+  local linked=0 skipped=0
+
+  if [ ! -d "$COMMANDS_SRC" ]; then
+    echo "  (no commands/ source directory — skipping)"
+    return 0
+  fi
+
+  mkdir -p "$target_dir"
+
+  for cmd in "$COMMANDS_SRC"/*.md; do
+    [ -f "$cmd" ] || continue
+    name="$(basename "$cmd")"
+    dest="$target_dir/$name"
+
+    if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+      echo "  SKIP (real file, not a symlink): $dest"
+      skipped=$((skipped + 1))
+    else
+      ln -sfn "$cmd" "$dest"
       echo "  LINKED: $dest"
       linked=$((linked + 1))
     fi
@@ -114,8 +144,8 @@ if [ -z "$SCOPE" ] || [ -z "$TOOL" ]; then
   echo "  ./install.sh --scope=user    --tool=claude|copilot|all"
   echo "  ./install.sh --scope=project --tool=claude|copilot|all  /path/to/your-project"
   echo ""
-  echo "  --tool=claude    Claude Code, OpenCode, Cursor  (~/.claude/skills/ or .claude/skills/)"
-  echo "  --tool=copilot   GitHub Copilot                 (~/.copilot/skills/ or .github/skills/)"
+  echo "  --tool=claude    Claude Code, OpenCode, Cursor  (~/.claude/skills/ + commands/ or .claude/skills/ + commands/)"
+  echo "  --tool=copilot   GitHub Copilot                 (~/.copilot/skills/ + commands/ or .github/skills/ + commands/)"
   echo "  --tool=all       Both tools"
   echo ""
   echo "  --scope=user     Install globally, available in all projects"
@@ -145,24 +175,32 @@ install_claude_user() {
   echo ""
   echo "[claude / user scope] $HOME/.claude/skills/"
   link_skills "$HOME/.claude/skills"
+  echo "[claude / user scope] $HOME/.claude/commands/"
+  link_commands "$HOME/.claude/commands"
 }
 
 install_claude_project() {
   echo ""
   echo "[claude / project scope] $PROJECT_PATH/.claude/skills/"
   link_skills "$PROJECT_PATH/.claude/skills"
+  echo "[claude / project scope] $PROJECT_PATH/.claude/commands/"
+  link_commands "$PROJECT_PATH/.claude/commands"
 }
 
 install_copilot_user() {
   echo ""
   echo "[copilot / user scope] $HOME/.copilot/skills/"
   link_skills "$HOME/.copilot/skills"
+  echo "[copilot / user scope] $HOME/.copilot/commands/"
+  link_commands "$HOME/.copilot/commands"
 }
 
 install_copilot_project() {
   echo ""
   echo "[copilot / project scope] $PROJECT_PATH/.github/skills/"
   link_skills "$PROJECT_PATH/.github/skills"
+  echo "[copilot / project scope] $PROJECT_PATH/.github/commands/"
+  link_commands "$PROJECT_PATH/.github/commands"
 }
 
 case "$TOOL-$SCOPE" in

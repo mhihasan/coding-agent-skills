@@ -100,7 +100,7 @@ Before appending anything, review your own draft against this checklist and fix 
 are objective checks — they run in **both** modes (they are not collaboration pauses).
 
 | Check | Pass condition |
-|---|---|
+| --- | --- |
 | No orphan ACs | Every AC / functional requirement in the plan maps to ≥1 test scenario |
 | No invented work | Every task traces to a plan decision; nothing added the plan didn't ask for |
 | No placeholders | Complete paths, complete scenarios — no TBD / "similar to above" (composes with the writing-plans ADOPT line) |
@@ -122,6 +122,8 @@ After appending, open the Review Gate.
 ```
 > **Human Review:** APPROVED — YYYY-MM-DD — generating-tasks
 ```
+
+Then update `.agentic-sdlc/active/<KEY>.md` — read the file, set `step: reviewing-plan`, write back. If the file does not exist, skip silently.
 
 Then ask: > Ready to proceed? `/reviewing-plan <plan-file>` (yes/no)
 

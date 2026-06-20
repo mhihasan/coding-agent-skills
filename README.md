@@ -19,16 +19,27 @@ Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
 ## Quickstart
 
-**Full pipeline from a Jira ticket:**
+**Start anything — ticket, idea, or resume in-progress work:**
 
 ```
-/picking-up-task https://yoursite.atlassian.net/browse/PROJ-123
+/sdlc-start https://yoursite.atlassian.net/browse/PROJ-123
+/sdlc-start "add dark mode toggle"
+/sdlc-start
 ```
 
-Each skill tells you what to run next. Full sequence:
+`/sdlc-start` detects the input type and routes to the right entry point. With no argument it checks for in-progress work and offers to resume.
+
+Routes by input type:
 
 ```
+# ticket / URL / Jira key
 /picking-up-task → /planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
+
+# free-form idea
+brainstorming → /planning-from-spec → /generating-tasks → /reviewing-plan → /implementing-tasks → /reviewing-code → /crafting-commits
+
+# no argument — resume in-progress work
+reads .agentic-sdlc/active/ → continues at saved step
 ```
 
 Enter at any step if the upstream artifact already exists.
@@ -45,43 +56,15 @@ Reviews your staged diff by default, or pass `branch`, a PR number, or a diff fi
 
 ## Agentic Workflow
 
-```mermaid
-flowchart TD
-    classDef pipe fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
-    classDef judge fill:#fef3c7,stroke:#d97706,color:#78350f
-    classDef sp fill:#dcfce7,stroke:#16a34a,color:#14532d
-    classDef gate fill:#fed7aa,stroke:#ea580c,color:#7c2d12
+[![Pipeline flow — click to open interactive simulator](docs/pipeline-flow.svg)](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html)
 
-    ST(["① pick up ticket\nset up a branch\n/picking-up-task"]):::sp
-    PFT["② read the codebase\nwrite an implementation plan\n/planning-from-spec"]:::pipe
-    HG0{{"✋ you approve the plan\nor ask to revise it"}}:::gate
-    GT["③ break the plan into\nsmall testable tasks\n/generating-tasks"]:::pipe
-    HG1{{"✋ you approve the tasks\nor ask to revise them"}}:::gate
-    RP{"④ AI reviews the plan\nbefore any code is written\n/reviewing-plan"}:::judge
-    RPR["challenge or accept each finding\nupdate the plan\n/receiving-plan-review"]:::pipe
-    HG2{{"✋ you approve the plan\nor ask to revise it"}}:::gate
-    IT["⑤ write tests first, then code\ntask by task\n/implementing-tasks"]:::pipe
-    RC{"⑥ AI reviews the code\nindependent of who wrote it\n/reviewing-code"}:::judge
-    RCR["challenge or accept each finding\nfix the code"]:::sp
-    HG3{{"✋ you approve the code\nor ask to fix it"}}:::gate
-    CC(["⑦ clean up the commit history\nready to merge\n/crafting-commits"]):::sp
-
-    ST --> PFT --> HG0 --> GT --> HG1 --> RP
-    RP -->|PROCEED| HG2
-    RP -->|DO NOT PROCEED| RPR
-    RPR --> RP
-    HG2 --> IT
-    IT -->|all tasks done| RC
-    RC -->|PASS| HG3
-    RC -->|FAIL| RCR
-    RCR --> RC
-    HG3 --> CC
-```
+▶ [Open interactive simulator](https://mhihasan.github.io/agentic-sdlc/pipeline-flow.html) — type a ticket, URL, or idea and watch it route live.
 
 ## Skills
 
 | Skill | What it does |
 | --- | --- |
+| [`/sdlc-start`](commands/sdlc-start.md) | Universal entry point — routes tickets, URLs, ideas, or resumes in-progress work |
 | [`/picking-up-task`](skills/picking-up-task/SKILL.md) | Fetch a Jira ticket, create a local file, set up a branch |
 | [`/planning-from-spec`](skills/planning-from-spec/SKILL.md) | Read the codebase, write an implementation plan |
 | [`/generating-tasks`](skills/generating-tasks/SKILL.md) | Break the plan into small testable tasks |
