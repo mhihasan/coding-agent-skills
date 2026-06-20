@@ -36,9 +36,9 @@
   <!-- resume label -->
   <text x="410" y="146" text-anchor="middle" font-size="9" fill="#5B8DEF">↓ no arg: check .agentic-sdlc/active/</text>
 
-  <!-- Fork labels -->
-  <text x="210" y="165" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(245,166,35,0.8)">ticket / url / key</text>
-  <text x="610" y="165" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(79,195,161,0.8)">free-form idea</text>
+  <!-- Fork labels — above arrowheads -->
+  <text x="210" y="158" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(245,166,35,0.8)">ticket / url / key</text>
+  <text x="610" y="158" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(79,195,161,0.8)">free-form idea</text>
 
   <!-- ── TICKET NODE ── -->
   <rect x="110" y="173" width="200" height="52" rx="4" fill="#1A2333" stroke="rgba(245,166,35,0.4)" stroke-width="1"/>
@@ -75,49 +75,51 @@
   <polygon points="406,362 410,370 414,362" fill="#263045"/>
 
   <!-- ── STEP LIST ── -->
-  <!-- connector line -->
-  <line x1="51" y1="370" x2="51" y2="530" stroke="#263045" stroke-width="1"/>
+  <!-- connector segments between boxes (not through them) -->
+  <line x1="45" y1="388" x2="45" y2="400" stroke="#263045" stroke-width="1"/>
+  <line x1="45" y1="418" x2="45" y2="430" stroke="#263045" stroke-width="1"/>
+  <line x1="45" y1="448" x2="45" y2="460" stroke="#263045" stroke-width="1"/>
+  <line x1="45" y1="478" x2="45" y2="490" stroke="#263045" stroke-width="1"/>
 
   <!-- step 1: generating-tasks -->
   <rect x="36" y="370" width="18" height="18" rx="3" fill="#1A2333" stroke="#263045" stroke-width="1"/>
   <text x="45" y="383" text-anchor="middle" font-size="9" fill="#6B7899">1</text>
   <text x="66" y="383" font-size="12" font-weight="600" fill="#DDE2EC">generating-tasks</text>
-  <rect x="210" y="371" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
-  <text x="246" y="382" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.5">YOU APPROVE</text>
-  <text x="288" y="383" font-size="10" fill="#6B7899">decompose plan into TDD task specs</text>
+  <rect x="212" y="371" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
+  <text x="248" y="382" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.5">YOU APPROVE</text>
+  <text x="290" y="383" font-size="10" fill="#6B7899">decompose plan into TDD task specs</text>
 
   <!-- step 2: reviewing-plan -->
   <rect x="36" y="400" width="18" height="18" rx="3" fill="#1A2333" stroke="#263045" stroke-width="1"/>
   <text x="45" y="413" text-anchor="middle" font-size="9" fill="#6B7899">2</text>
   <text x="66" y="413" font-size="12" font-weight="600" fill="#DDE2EC">reviewing-plan</text>
-  <rect x="196" y="401" width="54" height="14" rx="2" fill="rgba(192,132,252,0.12)" stroke="rgba(192,132,252,0.3)" stroke-width="0.5"/>
-  <text x="223" y="412" text-anchor="middle" font-size="9" font-weight="700" fill="#C084FC" letter-spacing="0.5">AI JUDGE</text>
-  <text x="256" y="413" font-size="10" fill="#6B7899">PROCEED → continue · DO NOT PROCEED → loop</text>
+  <rect x="197" y="401" width="54" height="14" rx="2" fill="rgba(192,132,252,0.12)" stroke="rgba(192,132,252,0.3)" stroke-width="0.5"/>
+  <text x="224" y="412" text-anchor="middle" font-size="9" font-weight="700" fill="#C084FC" letter-spacing="0.5">AI JUDGE</text>
+  <text x="257" y="413" font-size="10" fill="#6B7899">PROCEED → continue · DO NOT PROCEED → loop</text>
 
   <!-- step 3: implementing-tasks -->
   <rect x="36" y="430" width="18" height="18" rx="3" fill="#1A2333" stroke="#263045" stroke-width="1"/>
   <text x="45" y="443" text-anchor="middle" font-size="9" fill="#6B7899">3</text>
   <text x="66" y="443" font-size="12" font-weight="600" fill="#DDE2EC">implementing-tasks</text>
-  <rect x="224" y="431" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
-  <text x="260" y="442" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.5">YOU APPROVE</text>
-  <text x="302" y="443" font-size="10" fill="#6B7899">TDD · task by task · frequent commits</text>
+  <rect x="226" y="431" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
+  <text x="262" y="442" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.5">YOU APPROVE</text>
+  <text x="304" y="443" font-size="10" fill="#6B7899">TDD · task by task · frequent commits</text>
 
   <!-- step 4: reviewing-code -->
   <rect x="36" y="460" width="18" height="18" rx="3" fill="#1A2333" stroke="#263045" stroke-width="1"/>
   <text x="45" y="473" text-anchor="middle" font-size="9" fill="#6B7899">4</text>
   <text x="66" y="473" font-size="12" font-weight="600" fill="#DDE2EC">reviewing-code</text>
-  <rect x="192" y="461" width="54" height="14" rx="2" fill="rgba(192,132,252,0.12)" stroke="rgba(192,132,252,0.3)" stroke-width="0.5"/>
-  <text x="219" y="472" text-anchor="middle" font-size="9" font-weight="700" fill="#C084FC" letter-spacing="0.5">AI JUDGE</text>
-  <text x="252" y="473" font-size="10" fill="#6B7899">PASS → continue · FAIL → fix → loop</text>
+  <rect x="193" y="461" width="54" height="14" rx="2" fill="rgba(192,132,252,0.12)" stroke="rgba(192,132,252,0.3)" stroke-width="0.5"/>
+  <text x="220" y="472" text-anchor="middle" font-size="9" font-weight="700" fill="#C084FC" letter-spacing="0.5">AI JUDGE</text>
+  <text x="253" y="473" font-size="10" fill="#6B7899">PASS → continue · FAIL → fix → loop</text>
 
   <!-- step 5: crafting-commits -->
-  <line x1="51" y1="500" x2="51" y2="530" stroke="none"/>
   <rect x="36" y="490" width="18" height="18" rx="3" fill="#1A2333" stroke="#263045" stroke-width="1"/>
   <text x="45" y="503" text-anchor="middle" font-size="9" fill="#6B7899">5</text>
   <text x="66" y="503" font-size="12" font-weight="600" fill="#DDE2EC">crafting-commits</text>
-  <rect x="208" y="491" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
-  <text x="244" y="502" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.5">YOU APPROVE</text>
-  <text x="286" y="503" font-size="10" fill="#6B7899">clean commits · PR ready</text>
+  <rect x="210" y="491" width="72" height="14" rx="2" fill="rgba(232,154,48,0.12)" stroke="rgba(232,154,48,0.3)" stroke-width="0.5"/>
+  <text x="246" y="502" text-anchor="middle" font-size="9" font-weight="700" fill="#E89A30" letter-spacing="0.5">YOU APPROVE</text>
+  <text x="288" y="503" font-size="10" fill="#6B7899">clean commits · PR ready</text>
 
   <!-- ── LEGEND ── -->
   <line x1="36" y1="524" x2="784" y2="524" stroke="#263045" stroke-width="1"/>
