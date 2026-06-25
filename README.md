@@ -14,13 +14,7 @@ One command. Works on macOS, Linux, WSL, Git Bash.
 curl -fsSL https://raw.githubusercontent.com/mhihasan/agentic-sdlc/main/install.sh | bash
 ```
 
-To update:
-
-```bash
-git -C ~/.agentic-sdlc pull
-```
-
-Skills are symlinks into the clone — a pull updates them immediately, no re-install needed.
+Re-run the same command to update. It pulls the latest and re-links any new skills.
 
 Specific tool or project-scoped? → [docs/INSTALL.md](docs/INSTALL.md)
 
