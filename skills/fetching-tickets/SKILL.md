@@ -12,7 +12,65 @@ Pull a Jira ticket and write it to a local markdown file that faithfully mirrors
 
 **Next step:** once the ticket is on disk, the developer typically runs `planning-from-spec` to turn it into an implementation plan.
 
-## Prerequisites
+## Auth path selection
+
+Choose the fetch path based on available credentials:
+
+| Condition | Path |
+| --- | --- |
+| `JIRA_EMAIL` and `JIRA_API_TOKEN` both set | **curl path** (full fidelity — renderedFields HTML, exact image ordering) |
+| Neither set | **MCP path** (OAuth via connected Jira integration — always works in OpenCode/Claude Code with Jira MCP) |
+
+If `JIRA_API_TOKEN` is set but curl returns a 403/404, fall back to MCP path and warn the developer that the API token may be misconfigured.
+
+---
+
+## MCP path (primary for OAuth users)
+
+Extract `<cloudId>` and `<KEY>` from the ticket URL: `https://<site>.atlassian.net/browse/<KEY>`
+
+Use `jira_getAccessibleAtlassianResources` to resolve the cloudId if needed.
+
+### Fetch the issue
+
+```
+jira_getJiraIssue(
+  cloudId = <cloudId>,
+  issueIdOrKey = <KEY>,
+  fields = ["*all"],
+  responseContentFormat = "markdown"
+)
+```
+
+From the response extract:
+- `fields.summary`, `fields.status.name`, `fields.issuetype.name`, `fields.priority.name`
+- `fields.assignee.displayName`, `fields.reporter.displayName`
+- `fields.description` — main description body
+- All `customfield_*` keys that have non-null, non-empty values — check `names` map for human-readable labels
+- `fields.subtasks[]` — key + summary + status
+- `fields.issuelinks[]` — link type + key + summary + status
+- `fields.attachment[]` — id, filename, content URL
+
+### Fetch comments
+
+```
+jira_getJiraIssue(
+  cloudId = <cloudId>,
+  issueIdOrKey = <KEY>,
+  fields = ["comment"],
+  responseContentFormat = "markdown"
+)
+```
+
+Filter to human comments only: exclude any where `author.accountType == "app"`.
+
+### Write the ticket file
+
+Follow the Section Order below. For custom fields, include only those with real human-written content (non-null, non-empty, not just whitespace or placeholder text). Images cannot be downloaded inline via MCP — note any attachments in the metadata block and skip the `images/` directory.
+
+---
+
+## Curl path (full fidelity)
 
 ```bash
 export JIRA_EMAIL="you@example.com"
@@ -21,17 +79,17 @@ export JIRA_API_TOKEN="your-api-token"   # https://id.atlassian.com/manage-profi
 
 Extract `<site>` and `<key>` from the ticket URL: `https://<site>.atlassian.net/browse/<key>`
 
-## Quick Reference
+### Quick Reference
 
 | Step | Command |
-|---|---|
+| --- | --- |
 | 1. Fetch everything | `curl … ?expand=names,renderedFields&fields=*all` |
 | 2. Find custom field IDs | Grep output for "Acceptance Criteria", "Direct Link", etc. |
 | 3. Read rendered HTML | Use `renderedFields` for exact image-bullet ordering |
 | 4. Download images | `curl -s -L -u "${JIRA_EMAIL}:${JIRA_API_TOKEN}" <content-url> -o <file>` — no `Accept` header |
 | 5. Write markdown | Follow ticket section order exactly from rendered HTML |
 
-## Step 1 — Fetch Everything in One Call
+### Step 1 — Fetch Everything in One Call
 
 ```bash
 curl -s -u "${JIRA_EMAIL}:${JIRA_API_TOKEN}" \
@@ -45,7 +103,7 @@ From this single response you get:
 - `renderedFields` — HTML-rendered version of every rich-text field (use this for section ordering)
 - `fields.self` — contains the Cloud ID for building attachment download URLs
 
-## Step 2 — Discover Custom Fields
+### Step 2 — Discover Custom Fields
 
 ```bash
 python3 -c "
@@ -118,7 +176,7 @@ This surfaces only fields with actual human-written content — no DoD checklist
 
 **Important:** Acceptance Criteria is almost never in `description` — it is always a separate custom field.
 
-## Step 3 — Read Rendered HTML for Section Order
+### Step 3 — Read Rendered HTML for Section Order
 
 The `renderedFields` key contains HTML for every rich-text field. Use it as the authoritative source for:
 - Exact ordering of images and bullet points within Acceptance Criteria
@@ -137,7 +195,7 @@ print(d['renderedFields'].get('customfield_XXXXX', ''))
 "
 ```
 
-## Step 4 — Download Images
+### Step 4 — Download Images
 
 Attachment `content` URLs are in `fields.attachment[].content` — use them directly, no Cloud ID needed. They return a 303 redirect to the actual file.
 
@@ -268,7 +326,7 @@ Before declaring the ticket file done, review your own output against this check
 failure. These are objective checks — they run in **both** collaborative and `auto` mode.
 
 | Check | Pass condition |
-|---|---|
+| --- | --- |
 | AC present | Acceptance Criteria custom field discovered and included (not left in `description`) |
 | Real content only | `has_real_content()` filter applied — no empty wiki tables, italic placeholders, "No X logged" |
 | All images local | Every image referenced in rendered HTML downloaded to `images/` and inlined at its rendered position |
@@ -291,7 +349,7 @@ This skill is mechanical, so the mode mostly affects how a blocking dependency i
 ## Common Mistakes
 
 | Mistake | Fix |
-|---|---|
+| --- | --- |
 | Looking for AC in `description` | AC is a custom field — discover it via the `names` map |
 | Hardcoding a custom field ID | Field IDs differ per Jira instance — always discover |
 | Using `-H "Accept: image/png"` in curl | Omit Accept header — causes 406; the endpoint redirects automatically |
