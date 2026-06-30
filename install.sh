@@ -124,10 +124,10 @@ link_commands() {
     return 0
   fi
 
-  # Broken symlink at target — can't mkdir through it; warn and skip.
+  # Broken symlink at target — remove it so mkdir -p can proceed.
   if [ -L "$target_dir" ] && [ ! -d "$target_dir" ]; then
-    echo "  SKIP (broken symlink at $target_dir — remove it and re-run to install commands)"
-    return 0
+    rm "$target_dir"
+    echo "  REMOVED broken symlink at $target_dir"
   fi
 
   mkdir -p "$target_dir"
